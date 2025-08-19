@@ -6,7 +6,6 @@ import AccountSettingScreen from '../screens/SettingScreens/AccountSettingScreen
 import MyQRCode from '../screens/SettingScreens/QrCodeScreen/MyQRCode';
 import SubscriptionScreen from '../screens/SettingScreens/SubscriptionScreen/SubscriptionScreen';
 import SavedPostsScreen from '../screens/SettingScreens/SavedPostsScreen/SavedPostsScreen';
-import NotificationScreen from '../screens/SettingScreens/Notifications_Screen/Notifications_Screen';
 import NotificationSettingsScreen from '../screens/SettingScreens/Notifications_Screen/Notifications_Screen';
 import CoinWalletScreen from '../screens/SettingScreens/WalletScreens/WalletScreen';
 import BlockedUsersScreen from '../screens/SettingScreens/BlockedUsers Screen/BlockedUsersScreen';
