@@ -5,8 +5,8 @@ import HomeIcon from '../../assets/svgs/HomeSimple.svg';
 import HomeIconFilled from '../../assets/svgs/Home.svg';
 import Category from '../../assets/svgs/Categories.svg';
 import CategoryFilled from '../../assets/svgs/CategoryColored.svg';
-import ChatColored from '../../assets/svgs/ChatColored.svg';
-import Chat from '../../assets/svgs/Chat.svg';
+import GameColored from '../../assets/svgs/GameColored.svg';
+import Game from '../../assets/svgs/Game.svg';
 import LiveIcon from '../../assets/svgs/LiveStreamSimple.svg';
 import LiveIconFilled from '../../assets/svgs/LiveStream.svg';
 import ProfileIconColored from '../../assets/svgs/ProfileColored.svg';
@@ -41,11 +41,11 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
         ) : (
           <LiveIcon width={size} height={size} />
         );
-      case 'Messeges':
+      case 'Games':
         return isFocused ? (
-          <ChatColored width={size} height={size} />
+          <GameColored width={size} height={size} />
         ) : (
-          <Chat width={size} height={size} />
+          <Game width={size} height={size} />
         );
       case 'Profile':
         return isFocused ? (
