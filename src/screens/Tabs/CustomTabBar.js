@@ -3,8 +3,8 @@ import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import HomeIcon from '../../assets/svgs/HomeSimple.svg';
 import HomeIconFilled from '../../assets/svgs/Home.svg';
-import Category from '../../assets/svgs/Categories.svg';
-import CategoryFilled from '../../assets/svgs/CategoryColored.svg';
+import ShopIcon1 from '../../assets/svgs/ShopIcon1.svg';
+import ShopColored from '../../assets/svgs/ShopColored.svg';
 import GameColored from '../../assets/svgs/GameColored.svg';
 import Game from '../../assets/svgs/Game.svg';
 import LiveIcon from '../../assets/svgs/LiveStreamSimple.svg';
@@ -31,9 +31,9 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
         );
       case 'Search':
         return isFocused ? (
-          <CategoryFilled width={size} height={size} />
+          <ShopColored width={39} height={38} />
         ) : (
-          <Category width={size} height={size} />
+          <ShopIcon1 width={39} height={38} />
         );
       case 'LiveStream':
         return isFocused ? (

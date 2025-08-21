@@ -13,6 +13,8 @@ import ForgotPassScreen from '../screens/ForgotPasswordScreen/ForgotPassScreen';
 import ForgotPassScreen2 from '../screens/ForgotPasswordScreen/ForgotPass2';
 import CommentsScreen from '../screens/CommentsScreen/CommentScreen';
 import FeedScreen from '../screens/FeedScreen/FeedScreen';
+import ProductListScreen from '../screens/Products/ProductListScreen/ProductListScreen';
+import ProductDetailScreen from '../screens/ProductDetailPage/ProductDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,6 +38,8 @@ const Navigation = () => {
         <Stack.Screen name="Home" component={BottomNavigator} />
         <Stack.Screen name="Feed" component={FeedScreen} />
         <Stack.Screen name="Comments" component={CommentsScreen} />
+        <Stack.Screen name="ProductListScreen" component={ProductListScreen} />
+        <Stack.Screen name="ProductDetailScreen" component={ProductDetailScreen} />
         <Stack.Screen
           name="SettingScreen"
           component={SettingScreenNavigation}
