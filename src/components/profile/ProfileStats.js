@@ -18,7 +18,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import Settings from '../../assets/svgs/IconSetting.svg';
 
-const ProfileHeader = () => {
+export const ProfileHeader = () => {
   const navigation = useNavigation();
 
   return (
@@ -172,5 +172,3 @@ const styles = StyleSheet.create({
     marginRight: wp('-8%'),
   },
 });
-
-export default ProfileHeader;
