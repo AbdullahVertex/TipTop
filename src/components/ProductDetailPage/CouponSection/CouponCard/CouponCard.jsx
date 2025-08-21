@@ -11,17 +11,18 @@ const CouponCard = memo(({
   return (
     <View style={styles.couponCard}>
       <View style={styles.couponContent}>
-        <View style={styles.couponLeft}>
-          <View style={styles.textContainer}>
-            <Text style={styles.couponTitle}>Shoping Day Coupon</Text>
-            <Text style={styles.couponSubtitle}>For every order over $50.00 USD</Text>
-            <Text style={styles.validityText}>Dec 1, 12:00 AM - Dec 16, 12:00 AM</Text>
-          </View>
-          <View style={styles.discountContainer}>
-            <Text style={styles.discountText}>{coupon.discount}</Text>
-          </View>
-        </View>
-        <View style={styles.couponRight}>
+        {/* Title */}
+        <Text style={styles.couponTitle}>Shoping Day Coupon</Text>
+        
+        {/* Condition */}
+        <Text style={styles.couponSubtitle}>For every order over $50.00 USD</Text>
+        
+        {/* Validity Period */}
+        <Text style={styles.validityText}>Dec 1, 12:00 AM - Dec 16, 12:00 AM</Text>
+        
+        {/* Bottom Row with Discount and Button */}
+        <View style={styles.bottomRow}>
+          <Text style={styles.discountText}>Rp 100.000</Text>
           <Pressable 
             style={styles.getButton} 
             onPress={() => onGetCoupon(coupon.id)}
@@ -41,8 +42,8 @@ const styles = StyleSheet.create({
     width: wp('85%'),
     height: hp('20%'),
     marginRight: wp('3%'),
-    borderRadius: 16,
-    backgroundColor: '#8B5CF6',
+    borderRadius: 12,
+    backgroundColor: '#8A53FF',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -51,42 +52,37 @@ const styles = StyleSheet.create({
   },
   couponContent: {
     flex: 1,
-    flexDirection: 'row',
     paddingHorizontal: wp('4%'),
-    paddingTop: hp('2.5%'),
+    paddingTop: hp('3%'),
     paddingBottom: hp('3%'),
-  },
-  couponLeft: {
-    flex: 1,
     justifyContent: 'space-between',
   },
-  textContainer: {
-    marginBottom: hp('2%'),
-  },
-  discountContainer: {
-    alignSelf: 'flex-start',
+  bottomRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    marginTop: hp('2%'),
   },
   couponTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#FFFFFF',
     fontFamily: 'Roboto',
-    marginBottom: hp('0.8%'),
+    marginBottom: hp('1%'),
   },
   couponSubtitle: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '400',
     color: '#FFFFFF',
     fontFamily: 'Roboto',
-    marginBottom: hp('1.5%'),
+    marginBottom: hp('1%'),
     opacity: 0.9,
   },
   validityText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '400',
     color: '#FFFFFF',
     fontFamily: 'Roboto',
-    marginBottom: hp('2.5%'),
     opacity: 0.8,
   },
   discountText: {
@@ -95,17 +91,13 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontFamily: 'Roboto',
   },
-  couponRight: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingLeft: wp('3%'),
-  },
+
   getButton: {
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: wp('3.5%'),
+    paddingHorizontal: wp('3%'),
     paddingVertical: hp('1.2%'),
     borderRadius: 6,
-    minWidth: wp('23%'),
+    minWidth: wp('22%'),
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -116,7 +108,7 @@ const styles = StyleSheet.create({
   getButtonText: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: '#8B5CF6',
+    color: '#8A53FF',
     fontFamily: 'Roboto',
   },
 });
