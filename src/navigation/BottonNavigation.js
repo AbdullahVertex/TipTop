@@ -17,7 +17,7 @@ const BottomNavigator = () => {
       screenOptions={{ headerShown: false }}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Search" component={ProductListScreen} />
+      <Tab.Screen name="Shop" component={ProductListScreen} />
       <Tab.Screen name="LiveStream" component={LiveStreamNavigation} />
       <Tab.Screen name="Games" component={GamesTabScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />

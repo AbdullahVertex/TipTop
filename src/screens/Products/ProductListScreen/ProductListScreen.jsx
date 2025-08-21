@@ -7,6 +7,7 @@ import HorizontalCarousel from "../../../components/ProductListScreen/Horizontal
 import ProductCardSmall from "../../../components/ProductListScreen/ProductCardSmall/ProductCardSmall";
 import SearchModal from "../../../components/ProductListScreen/SearchModal/SearchModal";
 import { useProductSearch } from "../../../hooks/useProductSearch";
+import AppSafeAreaView from "../../../components/General/SafeAreaView/SafeAreaView";
 
 export default function ProductListScreen({ navigation }) {
   const [location, setLocation] = useState("San Francisco, California");
@@ -60,12 +61,12 @@ export default function ProductListScreen({ navigation }) {
   };
 
   return (
+    <AppSafeAreaView>
     <View style={{ flex: 1, backgroundColor: "#fff" }}>
       <TopBar
         locationTitle="Your Location"
         location={location}
         onPressLocation={() => setPickerOpen(true)}
-        onPressHome={() => navigation?.navigate?.("Home")}
         onPressSearch={openSearchModal}
       />
 
@@ -140,5 +141,6 @@ export default function ProductListScreen({ navigation }) {
         {/* location picker UI later */}
       </Modal>
     </View>
+    </AppSafeAreaView>
   );
 }
