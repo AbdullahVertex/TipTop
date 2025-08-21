@@ -21,7 +21,6 @@ export default function TopBar({
               {location}
             </Text>
           </View>
-          
         </Pressable>
 
         <Pressable onPress={onPressSearch} style={styles.searchBtn} accessibilityRole="button" accessibilityLabel="Search">
