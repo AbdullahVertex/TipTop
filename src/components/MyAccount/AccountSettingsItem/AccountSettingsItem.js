@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
+    borderRadius: 20,
   },
   leftSection: {
     flexDirection: 'row',
