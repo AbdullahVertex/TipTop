@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet, Platform } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient'; // Import the Linear Gradient
 import { wp, hp } from '../../utils/helpers/responsive';
 import Verified from '../../assets/svgs/VerifiedSymbol.svg';
@@ -15,25 +15,22 @@ const StreamCard = ({
   viewers,
   cardStyle2,
   description,
-  gradientColors, // Prop for gradient colors
+  gradientColors,
 }) => {
   return (
-    <LinearGradient
-      colors={gradientColors} // Apply different gradient colors based on type
-      style={[styles.card, cardStyle2]} // Keep the card layout consistent
-    >
+    <LinearGradient colors={gradientColors} style={[styles.card, cardStyle2]}>
       {/* Avatar(s) */}
       {type === 'solo' && <Image source={avatar} style={styles.avatar} />}
       {type === 'battle' && (
         <View style={styles.battleWrapper}>
           <Image
             source={avatarLeft}
-            style={[styles.battleAvatar, styles.battleLeftAvatar]} // Adjust first avatar to overlap
+            style={[styles.battleAvatar, styles.battleLeftAvatar]}
           />
           <VS style={styles.vsSymbol} width={wp(20)} height={wp(10)} />
           <Image
             source={avatarRight}
-            style={[styles.battleAvatar, styles.battleRightAvatar]} // Adjust second avatar position
+            style={[styles.battleAvatar, styles.battleRightAvatar]}
           />
         </View>
       )}
@@ -67,12 +64,11 @@ export default StreamCard;
 
 const styles = StyleSheet.create({
   card: {
+    paddingHorizontal: Platform.OS === 'android' ? wp(1) : 0,
+    paddingVertical: Platform.OS === 'android' ? hp(5) : 0,
     width: '50%',
     justifyContent: 'center',
-    height: wp(69),
-    //paddingLeft: wp(3), // Apply horizontal padding for both platforms
-    // paddingRight: wp(3),
-    //  padding: wp(3),
+    height: Platform.OS === 'ios' ? hp(30) : undefined,
   },
   avatar: {
     width: wp(18), // Responsive width for solo avatar
@@ -137,13 +133,13 @@ const styles = StyleSheet.create({
     marginBottom: wp(1),
   },
   viewers: {
-    fontSize: wp(3.5),
+    fontSize: hp(1.4),
     color: '#666',
     marginBottom: wp(1.5),
   },
   desc: {
     textAlign: 'center',
-    fontSize: wp(3.5),
+    fontSize: hp(1.5),
     paddingHorizontal: wp(3),
     color: '#FFFFFF',
   },

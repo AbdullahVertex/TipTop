@@ -49,11 +49,11 @@ const AccountSettingScreen = ({ navigation }) => {
     <AppSafeAreaView>
       <Header
         title="Account Settings"
-        rightElement={
-          <TouchableOpacity style={styles.moreButton}>
-            <Icon name="ellipsis-horizontal" size={hp('3%')} color="#333" />
-          </TouchableOpacity>
-        }
+        // rightElement={
+        //   <TouchableOpacity style={styles.moreButton}>
+        //     <Icon name="ellipsis-horizontal" size={hp('3%')} color="#333" />
+        //   </TouchableOpacity>
+        // }
       />
       <ScrollView
         style={styles.scrollView}

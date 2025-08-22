@@ -44,7 +44,7 @@ export default function GamesTabScreen({ navigation }) {
     if (!q) return GAMES;
     return GAMES.filter(g => g.title.toLowerCase().includes(q));
   }, [query]);
-
+  //const navigation = useNavigation();
   return (
     <AppSafeAreaView>
       <Header title="Games" showBack={false} />
@@ -55,9 +55,7 @@ export default function GamesTabScreen({ navigation }) {
         <SectionGrid
           title="Popular"
           data={filtered}
-          onPressItem={item =>
-            Alert.alert(item.title, `Rating: ${item.rating}`)
-          }
+          onPressItem={item => navigation.navigate('GamesDetailScreen')}
         />
       </View>
     </AppSafeAreaView>

@@ -13,7 +13,12 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { SettingsSection, SettingsItem } from '../../../components';
+import {
+  SettingsSection,
+  SettingsItem,
+  AccountSettingsItem,
+  MoreOptionsItem,
+} from '../../../components';
 import SaveIcon from '../../../assets/svgs/save.svg';
 import LanguageIcon from '../../../assets/svgs/language.svg';
 import SettingIcon from '../../../assets/svgs/settings.svg';
@@ -25,12 +30,19 @@ import PeopleIcon from '../../../assets/svgs/users.svg';
 import MessageIcon from '../../../assets/svgs/message.svg';
 import BellIcon from '../../../assets/svgs/bell.svg';
 import PrimaryColors from '../../../constants/colors';
+import { icons } from '../../../constants/icons';
+import BecomePlus from '../../../components/Settings/BecomePlusButton/BecomPlusButton';
+import Header from '../../../components/General/Headers/GeneralHeader';
+import AppSafeAreaView from '../../../components/General/SafeAreaView/SafeAreaView';
 
 const svgColor = '#374151';
 
 const SettingScreen = ({ navigation }) => {
   const [showFollowings, setShowFollowings] = useState(true);
   const [showChatButton, setShowChatButton] = useState(false);
+  const [newsletterEnabled, setNewsletterEnabled] = useState(true);
+  const [textMessagesEnabled, setTextMessagesEnabled] = useState(false);
+  const [phoneCallsEnabled, setPhoneCallsEnabled] = useState(false);
 
   const handleBackPress = () => {
     navigation.goBack();
@@ -59,6 +71,9 @@ const SettingScreen = ({ navigation }) => {
 
   const handleWhoCanSeePosts = () => {
     // Show dropdown for post visibility
+  };
+  const handleAccountItemPress = item => {
+    console.log(`${item} pressed`);
   };
 
   const handleNotifications = () => {
@@ -115,31 +130,50 @@ const SettingScreen = ({ navigation }) => {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="white" />
+    <AppSafeAreaView style={{ backgroundColor: '#F9F9F9' }}>
+      <ScrollView>
+        {/* Header */}
+        <Header title="Settings" />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={handleBackPress} style={styles.backButton}>
-          <Icon name="arrow-back" size={wp('6%')} color="#333" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Settings</Text>
-        <View style={styles.headerSpacer} />
-      </View>
-
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={styles.content}>
-          {/* Account Section */}
-          <SettingsSection title="Account">
+          <BecomePlus title={'Become'} subtitle={'Plus'} />
+          {/* More Options */}
+          <SettingsSection>
             {accountSettingsItems.map((item, idx) => (
               <SettingsItem
                 key={item.title}
-                icon={item.icon}
                 title={item.title}
                 onPress={item.onPress}
                 showArrow={item.showArrow}
               />
             ))}
+          </SettingsSection>
+          {/* Account Section */}
+          <SettingsSection title="Account">
+            <AccountSettingsItem
+              iconImage={icons.lock}
+              title="Change Password"
+              onPress={() => handleAccountItemPress('Change Password')}
+              showArrow={true}
+            />
+            <AccountSettingsItem
+              iconImage={icons.notification}
+              title="Notifications"
+              onPress={() => handleAccountItemPress('Notifications')}
+              showArrow={true}
+            />
+            <AccountSettingsItem
+              iconImage={icons.hand}
+              title="Privacy Settings"
+              onPress={() => handleAccountItemPress('Privacy Settings')}
+              showArrow={true}
+            />
+            <AccountSettingsItem
+              iconImage={icons.signOut}
+              title="Sign Out"
+              onPress={() => handleAccountItemPress('Sign Out')}
+              showArrow={true}
+            />
           </SettingsSection>
 
           {/* Privacy Section */}
@@ -179,7 +213,7 @@ const SettingScreen = ({ navigation }) => {
           </SettingsSection>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </AppSafeAreaView>
   );
 };
 
@@ -188,7 +222,7 @@ export default SettingScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#F9F9F9',
   },
   header: {
     flexDirection: 'row',

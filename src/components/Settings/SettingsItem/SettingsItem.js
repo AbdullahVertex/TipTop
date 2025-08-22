@@ -7,6 +7,7 @@ import {
 } from 'react-native-responsive-screen';
 import PrimaryColors from '../../../constants/colors';
 import Switch from '../../General/Switch/Switch';
+import LinearGradient from 'react-native-linear-gradient';
 
 const SettingsItem = ({
   icon,
@@ -51,9 +52,27 @@ const SettingsItem = ({
             inactiveColor={switchInactiveColor}
           />
         )}
-
-        {showArrow && (
-          <Icon name="chevron-forward" size={wp('5%')} color="#9CA3AF" />
+        {title === 'Account Settings' ? (
+          <LinearGradient
+            colors={['#F61D80', '#8774FF', '#343DFF']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={{ alignItems: 'center', borderRadius: 40 }}
+          >
+            <Text
+              style={{
+                color: 'white',
+                paddingHorizontal: wp(3),
+                lineHeight: wp(5),
+              }}
+            >
+              0.00$
+            </Text>
+          </LinearGradient>
+        ) : (
+          showArrow && (
+            <Icon name="chevron-forward" size={wp('5%')} color="#9CA3AF" />
+          )
         )}
       </View>
     </TouchableOpacity>
@@ -70,6 +89,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
+    borderRadius: 20,
   },
   leftSection: {
     flexDirection: 'row',

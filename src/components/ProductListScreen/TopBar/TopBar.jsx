@@ -1,8 +1,8 @@
 import React from "react";
 import { View, Text, Pressable, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { hp } from "../../../utils/helpers/responsive";
 
 export default function TopBar({
   locationTitle = "Your Location",
@@ -11,7 +11,7 @@ export default function TopBar({
   onPressSearch = () => {},
 }) {
   return (
-    <SafeAreaView edges={["top"]} style={styles.safe}>
+    
       <View style={styles.row}>
         <Pressable style={styles.locationWrap} onPress={onPressLocation} accessibilityRole="button" accessibilityLabel="Change location">
           <MaterialCommunityIcons name="map-marker" size={28} color="#8A53FF" style={{ marginRight: 6 }} />
@@ -27,15 +27,15 @@ export default function TopBar({
           <Ionicons name="search" size={20} color="#111827" />
         </Pressable>
       </View>
-    </SafeAreaView>
+  
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { backgroundColor: '#FFFF' },
   row: {
     flexDirection: "row",
     alignItems: "center",
+    marginTop:hp(2),
     paddingHorizontal: 16,
     paddingBottom: 8,
     gap: 12,
