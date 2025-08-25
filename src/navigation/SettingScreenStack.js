@@ -10,6 +10,7 @@ import NotificationSettingsScreen from '../screens/SettingScreens/Notifications_
 import CoinWalletScreen from '../screens/SettingScreens/WalletScreens/WalletScreen';
 import BlockedUsersScreen from '../screens/SettingScreens/BlockedUsers Screen/BlockedUsersScreen';
 import ScanQRCode from '../screens/SettingScreens/QrCodeScreen/scanQRCode/ScanQRCode';
+import AddCardScreen from '../screens/SettingScreens/AddCardScreen/AddCardScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +35,7 @@ const SettingScreenNavigation = () => {
         name="NotificationScreen"
         component={NotificationSettingsScreen}
       />
+      <Stack.Screen name="AddCardScreen" component={AddCardScreen} />
     </Stack.Navigator>
   );
 };

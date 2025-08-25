@@ -52,8 +52,9 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: wp('3%'),
     alignSelf: 'center',
-    width: wp(80),
-    height: hp(8),
+    paddingVertical: Platform.OS === 'android' ? hp(0.2) : undefined,
+    width: Platform.OS === 'ios' ? wp(80) : wp(85),
+    height: Platform.OS === 'ios' ? hp(8) : undefined,
   },
   innerContainer: {
     flexDirection: 'row',

@@ -37,7 +37,7 @@ const CoinWalletScreen = () => {
           showsVerticalScrollIndicator={false}
         >
           <CoinWalletHeader balance={5.69} collected={526} purchased={12.69} />
-          <View>
+          <View style={{}}>
             {/* Coin Shop */}
             <View style={{ alignItems: 'center', marginTop: -hp(4) }}>
               <CoinIcon />
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   coinItemContainer: {
-    marginVertical: hp('1%'),
+    marginVertical: hp('1'),
   },
   coinItemButton: {
     flexDirection: 'row',

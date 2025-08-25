@@ -34,6 +34,8 @@ import { icons } from '../../../constants/icons';
 import BecomePlus from '../../../components/Settings/BecomePlusButton/BecomPlusButton';
 import Header from '../../../components/General/Headers/GeneralHeader';
 import AppSafeAreaView from '../../../components/General/SafeAreaView/SafeAreaView';
+import CardSettingsItem from '../../../components/AddCard/CardSettingItem/CardSettingsItem';
+import AddCardButton from '../../../components/AddCard/AddCardButton/AddCardButton';
 
 const svgColor = '#374151';
 
@@ -209,6 +211,15 @@ const SettingScreen = ({ navigation }) => {
               title="Notifications"
               onPress={handleNotifications}
               showArrow={true}
+            />
+          </SettingsSection>
+          <SettingsSection
+            title={'Payment Cards'}
+            style2={{ backgroundColor: 'transparent' }}
+          >
+            <CardSettingsItem />
+            <AddCardButton
+              onPress={() => navigation.navigate('AddCardScreen')}
             />
           </SettingsSection>
         </View>

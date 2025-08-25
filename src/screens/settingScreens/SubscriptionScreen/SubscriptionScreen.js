@@ -22,15 +22,12 @@ export default function SubscriptionScreen() {
   return (
     <AppSafeAreaView>
       <Header title="Subscription" />
-      {/* Title */}
       <View style={{ alignItems: 'center' }}>
         <Text style={styles.plus}>PLUS+</Text>
         <Text style={styles.description}>
           Subscribe to Plus and have ad-free experience and verified icon on
           your profile.
         </Text>
-
-        {/* Features */}
         <View style={styles.features}>
           <View style={styles.feature}>
             <Image
@@ -75,7 +72,6 @@ export default function SubscriptionScreen() {
             onPress={() => setSelected('monthly')}
           />
         </ScrollView>
-        {/* Subscribe Button */}
         <TouchableOpacity style={styles.subscribeBtn}>
           <Text style={styles.subscribeText}>Subscribe Now</Text>
         </TouchableOpacity>
