@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
     padding: hp(2),
     borderRadius: wp(2),
     marginHorizontal: hp(1),
-    marginBottom: hp(2),
+    marginBottom: hp(1),
     elevation: 2,
   },
   coinContainer: {

@@ -5,11 +5,11 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-const SettingsSection = ({ title, children }) => {
+const SettingsSection = ({ title, children, style2 }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>{title}</Text>
-      <View style={styles.sectionContent}>{children}</View>
+      <View style={[styles.sectionContent, style2]}>{children}</View>
     </View>
   );
 };
