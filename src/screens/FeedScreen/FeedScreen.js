@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, StyleSheet, Text } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import AppSafeAreaView from '../../components/General/SafeAreaView/SafeAreaView';
 import StoryBar from '../../components/Feed/StoryBar';
 import FeedPost from '../../components/Feed/FeedPost';
