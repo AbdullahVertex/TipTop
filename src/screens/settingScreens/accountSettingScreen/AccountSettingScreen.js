@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   StyleSheet,
   Text,
   View,
   ScrollView,
   TouchableOpacity,
+  Pressable,
+  Dimensions,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import AccountSettingsItem from '../../../components/MyAccount/AccountSettingsItem/AccountSettingsItem';
 import SettingsSection from '../../../components/Settings/SettingsSection/SettingsSection';
 import ProfilePhotoSelector from '../../../components/ProfilePhotoSelector/ProfilePhotoSelector';
@@ -16,18 +17,45 @@ import { icons } from '../../../constants/icons';
 import { SettingsItem } from '../../../components';
 import Header from '../../../components/General/Headers/GeneralHeader';
 import AppSafeAreaView from '../../../components/General/SafeAreaView/SafeAreaView';
-
-// Responsive utils
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import BottomSheet from '@gorhom/bottom-sheet';
+import DeleteAccountSheet from '../../../components/DeleteAccountSheet/DeleteAccountSheet';
+
+const { width, height } = Dimensions.get('window');
 
 const AccountSettingScreen = ({ navigation }) => {
   const [selectedPhoto, setSelectedPhoto] = useState(1);
   const [newsletterEnabled, setNewsletterEnabled] = useState(true);
   const [textMessagesEnabled, setTextMessagesEnabled] = useState(false);
   const [phoneCallsEnabled, setPhoneCallsEnabled] = useState(false);
+
+  // Bottom sheet ref and state
+  const bottomSheetRef = useRef(null);
+  const [isDeleteSheetOpen, setIsDeleteSheetOpen] = useState(false);
+
+  // Open bottom sheet
+  const openDeleteSheet = useCallback(() => {
+    setIsDeleteSheetOpen(true);
+    setTimeout(() => {
+      bottomSheetRef.current?.expand();
+    }, 10);
+  }, []);
+
+  // Close bottom sheet
+  const closeDeleteSheet = useCallback(() => {
+    setIsDeleteSheetOpen(false);
+    bottomSheetRef.current?.close();
+  }, []);
+
+  // Handle delete action
+  const handleDeleteAccount = useCallback(() => {
+    // Your delete logic here
+    closeDeleteSheet();
+    // Optionally navigate or show a toast
+  }, [closeDeleteSheet]);
 
   const handlePhotoSelect = photoId => {
     setSelectedPhoto(photoId);
@@ -47,14 +75,7 @@ const AccountSettingScreen = ({ navigation }) => {
 
   return (
     <AppSafeAreaView>
-      <Header
-        title="Account Settings"
-        // rightElement={
-        //   <TouchableOpacity style={styles.moreButton}>
-        //     <Icon name="ellipsis-horizontal" size={hp('3%')} color="#333" />
-        //   </TouchableOpacity>
-        // }
-      />
+      <Header title="Account Settings" />
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}
@@ -93,6 +114,12 @@ const AccountSettingScreen = ({ navigation }) => {
             title="Sign Out"
             onPress={() => handleAccountItemPress('Sign Out')}
             showArrow={true}
+          />
+          <AccountSettingsItem
+            iconImage={icons.signOut}
+            title="Delete Account"
+            onPress={openDeleteSheet}
+            showArrow={false}
           />
         </SettingsSection>
 
@@ -139,6 +166,35 @@ const AccountSettingScreen = ({ navigation }) => {
           />
         </SettingsSection>
       </ScrollView>
+
+      {/* Overlay for shadow effect */}
+      {isDeleteSheetOpen && (
+        <Pressable
+          style={styles.overlay}
+          onPress={closeDeleteSheet}
+          pointerEvents="auto"
+        />
+      )}
+
+      {/* Delete Account Bottom Sheet */}
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={isDeleteSheetOpen ? 0 : -1}
+        snapPoints={['40%']}
+        enablePanDownToClose
+        onClose={closeDeleteSheet}
+        backgroundStyle={{
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
+          backgroundColor: '#fff',
+        }}
+        handleIndicatorStyle={{ backgroundColor: '#E5E5E5' }}
+      >
+        <DeleteAccountSheet
+          onDelete={handleDeleteAccount}
+          onClose={closeDeleteSheet}
+        />
+      </BottomSheet>
     </AppSafeAreaView>
   );
 };
@@ -176,5 +232,13 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
     paddingHorizontal: wp('4%'),
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width,
+    height,
+    backgroundColor: 'rgba(0,0,0,0.35)',
   },
 });
