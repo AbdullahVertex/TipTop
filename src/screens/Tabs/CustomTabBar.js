@@ -121,7 +121,7 @@ export default CustomTabBar;
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    backgroundColor: '#000',
+    backgroundColor: 'black',
     paddingTop: hp('1.2%'),
     paddingHorizontal: wp('5%'),
     alignSelf: 'center',

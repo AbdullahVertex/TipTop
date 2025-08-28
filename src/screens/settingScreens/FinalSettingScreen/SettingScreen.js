@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
@@ -36,6 +36,8 @@ import Header from '../../../components/General/Headers/GeneralHeader';
 import AppSafeAreaView from '../../../components/General/SafeAreaView/SafeAreaView';
 import CardSettingsItem from '../../../components/AddCard/CardSettingItem/CardSettingsItem';
 import AddCardButton from '../../../components/AddCard/AddCardButton/AddCardButton';
+import BottomSheet from '@gorhom/bottom-sheet';
+import DeleteAccountSheet from '../../../components/DeleteAccountSheet/DeleteAccountSheet';
 
 const svgColor = '#374151';
 
@@ -55,7 +57,7 @@ const SettingScreen = ({ navigation }) => {
   };
 
   const handleLanguages = () => {
-    navigation.navigate('SubscriptionScreen');
+    navigation.navigate('LanguageSettingScreen');
   };
 
   const handleBlockedUsers = () => {
@@ -68,7 +70,6 @@ const SettingScreen = ({ navigation }) => {
 
   const handleCoinWallet = () => {
     navigation.navigate('CoinWallet');
-    // Navigate to coin wallet screen
   };
 
   const handleWhoCanSeePosts = () => {
@@ -132,7 +133,7 @@ const SettingScreen = ({ navigation }) => {
   ];
 
   return (
-    <AppSafeAreaView style={{ backgroundColor: '#F9F9F9' }}>
+    <AppSafeAreaView style={{ backgroundColor: '#F9F9F9', flex: 1 }}>
       <ScrollView>
         {/* Header */}
         <Header title="Settings" />
