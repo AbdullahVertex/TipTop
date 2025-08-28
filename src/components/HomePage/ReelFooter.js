@@ -10,12 +10,14 @@ import {
 const ReelFooter = ({ name, caption, location }) => (
   <View style={styles.container}>
     <LinearGradient colors={['rgba(5, 0, 15, 0)', 'rgba(5, 0, 15, 1)']}>
-      <Text style={styles.name}>{name}</Text>
-      <Text style={styles.caption}>{caption}</Text>
-      <View style={styles.locationRow}>
-        <Location width={wp('5%')} height={hp('2%')} />{' '}
-        {/* Make icon size responsive */}
-        <Text style={styles.location}>{location}</Text>
+      <View style={{ marginBottom: hp(4) }}>
+        <Text style={styles.name}>{name}</Text>
+        <Text style={styles.caption}>{caption}</Text>
+        <View style={styles.locationRow}>
+          <Location width={wp('5%')} height={hp('2%')} />{' '}
+          {/* Make icon size responsive */}
+          <Text style={styles.location}>{location}</Text>
+        </View>
       </View>
     </LinearGradient>
   </View>
@@ -28,7 +30,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     //bottom: 0,
-    // paddingBottom: 10,
+    //paddingBottom: 10,
     alignSelf: 'center',
     //paddingHorizontal: wp('3%'), // Make padding responsive
     //paddingVertical: hp('2%'), // Make padding responsive

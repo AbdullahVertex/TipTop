@@ -8,6 +8,7 @@ import {
   Image,
 } from 'react-native';
 import ReelVideoPlayer from '../../components/HomePage/ReelPlayer';
+import AppSafeAreaView from '../../components/General/SafeAreaView/SafeAreaView';
 
 const { height } = Dimensions.get('window');
 const ITEM_HEIGHT = height * 0.9;
@@ -54,8 +55,11 @@ const ReelsScreen = () => {
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 80 }).current;
 
   return (
-    <View style={styles.rootContainer}>
-      <StatusBar barStyle="light-content" />
+    <AppSafeAreaView
+      style={{ backgroundColor: 'black' }}
+      backgroundColor="black"
+      barStyle="light-content"
+    >
       <View style={{ height: ITEM_HEIGHT }}>
         <FlatList
           data={dummyReels}
@@ -84,7 +88,7 @@ const ReelsScreen = () => {
           )}
         />
       </View>
-    </View>
+    </AppSafeAreaView>
   );
 };
 
