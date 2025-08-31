@@ -1,6 +1,6 @@
 import React from 'react';
-import ProfileGallery from '../../components/Profile/ProfileGallery';
-import { ProfileHeader } from '../../components/Profile/ProfileStats';
+import ProfileGallery from '../../components/profile/ProfileGallery';
+import { ProfileHeader } from '../../components/profile/ProfileStats';
 const ProfileScreen = () => {
   return (
     <>

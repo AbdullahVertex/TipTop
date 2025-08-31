@@ -17,6 +17,7 @@ import ProductListScreen from '../screens/Products/ProductListScreen/ProductList
 import ProductDetailScreen from '../screens/ProductDetailPage/ProductDetailScreen';
 import { GamesDetailScreen } from '../screens/GamesDetailScreen/GamesDetailScreen';
 import FeedStack from './FeedStack';
+import SearchScreen from '../screens/Tabs/SearchScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +40,7 @@ const Navigation = () => {
         <Stack.Screen name="Signup" component={SignUpScreen} />
         <Stack.Screen name="Home" component={BottomNavigator} />
         <Stack.Screen name="Feed" component={FeedStack} />
+        <Stack.Screen name="Search" component={SearchScreen} />
         <Stack.Screen name="Comments" component={CommentsScreen} />
         <Stack.Screen name="ProductListScreen" component={ProductListScreen} />
         <Stack.Screen

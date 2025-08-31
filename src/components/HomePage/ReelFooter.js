@@ -14,7 +14,7 @@ const ReelFooter = ({ name, caption, location }) => (
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.caption}>{caption}</Text>
         <View style={styles.locationRow}>
-          <Location width={wp('5%')} height={hp('2%')} />{' '}
+          <Location width={wp('5%')} height={hp('2%')} />
           {/* Make icon size responsive */}
           <Text style={styles.location}>{location}</Text>
         </View>

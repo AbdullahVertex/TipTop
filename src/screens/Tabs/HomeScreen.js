@@ -6,9 +6,15 @@ import {
   StatusBar,
   Dimensions,
   Image,
+  Text,
+  TouchableOpacity,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import ReelVideoPlayer from '../../components/HomePage/ReelPlayer';
 import AppSafeAreaView from '../../components/General/SafeAreaView/SafeAreaView';
+import Icon from 'react-native-vector-icons/Ionicons';
+import DiscoverDropdown from '../../components/Feed/DiscoverDropdown';
+import FeedScreen from '../FeedScreen/FeedScreen';
 
 const { height } = Dimensions.get('window');
 const ITEM_HEIGHT = height * 0.9;
@@ -43,7 +49,11 @@ const dummyReels = [
 ];
 
 const ReelsScreen = () => {
+  const navigation = useNavigation();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const [selectedOption, setSelectedOption] = useState('DISCOVER');
+  const [currentScreen, setCurrentScreen] = useState('discover');
   const flatListRef = useRef();
 
   const onViewableItemsChanged = useRef(({ viewableItems }) => {
@@ -56,37 +66,80 @@ const ReelsScreen = () => {
 
   return (
     <AppSafeAreaView
-      style={{ backgroundColor: 'black' }}
-      backgroundColor="black"
-      barStyle="light-content"
+      style={{ backgroundColor: currentScreen === 'discover' ? 'black' : 'white' }}
+      backgroundColor={currentScreen === 'discover' ? 'black' : 'white'}
+      barStyle={currentScreen === 'discover' ? 'light-content' : 'dark-content'}
     >
+      {/* Simple DISCOVER Header */}
+      <View style={styles.header}>
+        <View style={styles.leftSection} />
+        <TouchableOpacity 
+          style={styles.centerSection}
+          onPress={() => setIsDropdownVisible(!isDropdownVisible)}
+        >
+          <Text 
+            style={[
+              styles.title, 
+              { fontSize: selectedOption === 'FEEDS' ? 16 : 20 },
+              { color: currentScreen === 'discover' ? '#fff' : '#000' }
+            ]}
+          >
+            {selectedOption}
+          </Text>
+          <Image 
+            source={require('../../assets/icons/bxs_up-arrow.png')} 
+            style={[styles.upArrow, { tintColor: currentScreen === 'discover' ? '#fff' : '#000' }]}
+          />
+        </TouchableOpacity>
+        <View style={styles.rightSection} />
+      </View>
+
+      {/* Dropdown Component */}
+      <DiscoverDropdown
+        isVisible={isDropdownVisible}
+        onOptionSelect={(option) => {
+          setSelectedOption(option);
+          setIsDropdownVisible(false);
+          if (option === 'FEEDS') {
+            setCurrentScreen('feeds');
+          } else {
+            setCurrentScreen('discover');
+          }
+        }}
+        onClose={() => setIsDropdownVisible(false)}
+      />
+
       <View style={{ height: ITEM_HEIGHT }}>
-        <FlatList
-          data={dummyReels}
-          keyExtractor={item => item.id}
-          pagingEnabled
-          showsVerticalScrollIndicator={false}
-          onViewableItemsChanged={onViewableItemsChanged}
-          viewabilityConfig={viewConfig}
-          getItemLayout={(data, index) => ({
-            length: ITEM_HEIGHT,
-            offset: ITEM_HEIGHT * index,
-            index,
-          })}
-          ref={flatListRef}
-          renderItem={({ item, index }) => (
-            <View style={{ height: ITEM_HEIGHT }}>
-              {index === currentIndex ? (
-                <ReelVideoPlayer reel={item} isVisible={true} />
-              ) : (
-                <Image
-                  source={{ uri: item.thumbnailUrl }}
-                  style={styles.thumbnail}
-                />
-              )}
-            </View>
-          )}
-        />
+        {currentScreen === 'discover' ? (
+          <FlatList
+            data={dummyReels}
+            keyExtractor={item => item.id}
+            pagingEnabled
+            showsVerticalScrollIndicator={false}
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={viewConfig}
+            getItemLayout={(data, index) => ({
+              length: ITEM_HEIGHT,
+              offset: ITEM_HEIGHT * index,
+              index,
+            })}
+            ref={flatListRef}
+            renderItem={({ item, index }) => (
+              <View style={{ height: ITEM_HEIGHT }}>
+                {index === currentIndex ? (
+                  <ReelVideoPlayer reel={item} isVisible={true} />
+                ) : (
+                  <Image
+                    source={{ uri: item.thumbnailUrl }}
+                    style={styles.thumbnail}
+                  />
+                )}
+              </View>
+            )}
+          />
+        ) : (
+          <FeedScreen hideHeader={true} navigation={navigation} />
+        )}
       </View>
     </AppSafeAreaView>
   );
@@ -103,5 +156,48 @@ const styles = StyleSheet.create({
     height: ITEM_HEIGHT,
     width: '100%',
     resizeMode: 'cover',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: 'transparent',
+    zIndex: 1000,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+  },
+  leftSection: {
+    width: 40,
+  },
+  centerSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    width: 103,
+    height: 26,
+    justifyContent: 'center',
+  },
+  rightSection: {
+    width: 40,
+    alignItems: 'flex-end',
+  },
+  title: {
+    fontFamily: 'Poppins-SemiBold',
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  infoIcon: {
+    width: 32,
+    height: 32,
+    resizeMode: 'contain',
+  },
+  upArrow: {
+    width: 17,
+    height: 17,
+    resizeMode: 'contain',
   },
 });

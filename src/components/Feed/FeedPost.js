@@ -7,7 +7,7 @@ import {
 import PostHeader from './PostHeader';
 import PostFooter from './PostFooter';
 
-const FeedPost = ({ post, onCommentPress }) => {
+const FeedPost = ({ post, onCommentPress, isLast = false }) => {
   // function to render text with purple hashtags
   const renderTextWithHashtags = text => {
     return text.split(/(\s+)/).map((part, index) => {
@@ -27,7 +27,7 @@ const FeedPost = ({ post, onCommentPress }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isLast && styles.lastPost]}>
       <PostHeader
         avatar={post.avatar}
         username={post.username}
@@ -58,6 +58,9 @@ const styles = StyleSheet.create({
     marginBottom: hp('2%'),
     backgroundColor: '#fff',
     padding: wp('4%'),
+  },
+  lastPost: {
+    marginBottom: 0,
   },
   text: {
     fontSize: hp('1.9%'),

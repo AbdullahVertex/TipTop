@@ -1,17 +1,17 @@
 // src/Navigation.js
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import SettingScreen from '../screens/SettingScreens/FinalSettingScreen/SettingScreen';
-import AccountSettingScreen from '../screens/SettingScreens/AccountSettingScreen/AccountSettingScreen';
-import MyQRCode from '../screens/SettingScreens/QrCodeScreen/MyQRCode';
-import SubscriptionScreen from '../screens/SettingScreens/SubscriptionScreen/SubscriptionScreen';
-import SavedPostsScreen from '../screens/SettingScreens/SavedPostsScreen/SavedPostsScreen';
-import NotificationSettingsScreen from '../screens/SettingScreens/Notifications_Screen/Notifications_Screen';
-import CoinWalletScreen from '../screens/SettingScreens/WalletScreens/WalletScreen';
-import BlockedUsersScreen from '../screens/SettingScreens/BlockedUsers Screen/BlockedUsersScreen';
-import ScanQRCode from '../screens/SettingScreens/QrCodeScreen/scanQRCode/ScanQRCode';
-import AddCardScreen from '../screens/SettingScreens/AddCardScreen/AddCardScreen';
-import LanguageSettingScreen from '../screens/SettingScreens/LanguageSettingScreen/LanguageSettingScreen';
+import SettingScreen from '../screens/settingScreens/FinalSettingScreen/SettingScreen';
+import AccountSettingScreen from '../screens/settingScreens/accountSettingScreen/AccountSettingScreen';
+import MyQRCode from '../screens/settingScreens/QrCodeScreen/MyQRCode';
+import SubscriptionScreen from '../screens/settingScreens/SubscriptionScreen/SubscriptionScreen';
+import SavedPostsScreen from '../screens/settingScreens/SavedPostsScreen/SavedPostsScreen';
+import NotificationSettingsScreen from '../screens/settingScreens/Notifications_Screen/Notifications_Screen';
+import CoinWalletScreen from '../screens/settingScreens/WalletScreens/WalletScreen';
+import BlockedUsersScreen from '../screens/settingScreens/BlockedUsers Screen/BlockedUsersScreen';
+import ScanQRCode from '../screens/settingScreens/QrCodeScreen/scanQRCode/ScanQRCode';
+import AddCardScreen from '../screens/settingScreens/AddCardScreen/AddCardScreen';
+import LanguageSettingScreen from '../screens/settingScreens/LanguageSettingScreen/LanguageSettingScreen';
 
 const Stack = createNativeStackNavigator();
 

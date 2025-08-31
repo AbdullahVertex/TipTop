@@ -7,7 +7,7 @@ import {
   View,
   ActivityIndicator,
 } from 'react-native';
-import Slider from '@react-native-community/slider';
+
 import { useNavigation } from '@react-navigation/native';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Video from 'react-native-video';
@@ -101,20 +101,25 @@ const ReelVideoPlayer = ({ reel, isVisible }) => {
 
       {/* Video Progress Bar */}
       <View style={styles.progressBarContainer}>
-        <Slider
-          style={{ flex: 1 }}
-          minimumValue={0}
-          maximumValue={duration}
-          value={isSeeking ? seekTime : currentTime}
-          minimumTrackTintColor="#fff"
-          maximumTrackTintColor="#888"
-          thumbTintColor="transparent"
-          onValueChange={value => {
-            setSeekTime(value);
+        <View 
+          style={{ 
+            flex: 1, 
+            height: 2, 
+            backgroundColor: '#888',
+            position: 'relative'
           }}
-          onSlidingStart={handleSlidingStart}
-          onSlidingComplete={handleSlidingComplete}
-        />
+        >
+          <View 
+            style={{ 
+              position: 'absolute',
+              left: 0,
+              top: 0,
+              height: 2,
+              width: `${(currentTime / duration) * 100}%`,
+              backgroundColor: '#fff'
+            }}
+          />
+        </View>
       </View>
 
       {/* Overlay UI */}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
   widthPercentageToDP as wp,
@@ -7,7 +7,7 @@ import {
 } from 'react-native-responsive-screen';
 
 const TopNavBar = ({
-  title = 'Feeds ▼',
+  title = 'Timeline',
   notificationsCount = 0,
   onBellPress,
   onSearchPress,

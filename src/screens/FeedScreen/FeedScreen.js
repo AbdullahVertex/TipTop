@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import AppSafeAreaView from '../../components/General/SafeAreaView/SafeAreaView';
 import StoryBar from '../../components/Feed/StoryBar';
 import FeedPost from '../../components/Feed/FeedPost';
 import TopNavBar from '../../components/Feed/TopNavBar';
+import DiscoverDropdown from '../../components/Feed/DiscoverDropdown';
 
 const stories = [
   {
@@ -45,30 +46,97 @@ const posts = [
   },
 ];
 
-const FeedScreen = ({ navigation }) => {
+const FeedScreen = ({ navigation, hideHeader = false }) => {
+  const [selectedOption, setSelectedOption] = useState('DISCOVER');
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+
   const handleCommentPress = postId => {
     navigation.navigate('Comments');
   };
 
+  const handleSearchPress = () => {
+    navigation.navigate('Search');
+  };
+
+  const handleBellPress = () => {
+    // Handle notification bell press
+    console.log('Bell pressed');
+  };
+
+  const handleAddPress = () => {
+    // Handle add button press
+    console.log('Add pressed');
+  };
+
+  const handleDropdownPress = () => {
+    setIsDropdownVisible(!isDropdownVisible);
+  };
+
+  const handleOptionSelect = (option) => {
+    setSelectedOption(option);
+    setIsDropdownVisible(false);
+  };
+
   return (
-    <AppSafeAreaView>
-      <TopNavBar notificationsCount={2} />
+    <AppSafeAreaView 
+      style={styles.container}
+      backgroundColor="transparent"
+      edges={[]}
+      enableKeyboardAvoid={false}
+    >
+      <TopNavBar 
+        title=""
+        notificationsCount={2} 
+        onSearchPress={handleSearchPress}
+        onBellPress={handleBellPress}
+        onAddPress={handleAddPress}
+      />
+      
+      {/* Dropdown Component */}
+      <DiscoverDropdown
+        isVisible={isDropdownVisible}
+        onOptionSelect={handleOptionSelect}
+        onClose={() => setIsDropdownVisible(false)}
+        style={styles.DiscoverDropdown}
+      />
       <StoryBar stories={stories} />
       <FlatList
         data={posts}
         keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <FeedPost post={item} onCommentPress={handleCommentPress} />
+        renderItem={({ item, index }) => (
+          <FeedPost 
+            post={item} 
+            onCommentPress={handleCommentPress}
+            isLast={index === posts.length - 1}
+          />
         )}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.flatListContent}
       />
     </AppSafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: '#f6f6f6' },
+  container: { 
+    flex: 1, 
+    backgroundColor: '#f6f6f6',
+    paddingTop: 0,
+    marginTop: 0
+  },
+  flatListContent: {
+    paddingBottom: 0,
+  },
   title: { fontSize: 22, fontWeight: '700', margin: 15 },
+  DiscoverDropdown:{
+    position:'absolute',
+    top:50,
+    left:0,
+    right:0,
+    zIndex:1001,
+
+  }
+
 });
 
 export default FeedScreen;
