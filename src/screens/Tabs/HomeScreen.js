@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import ReelVideoPlayer from '../../components/HomePage/ReelPlayer';
 import AppSafeAreaView from '../../components/General/SafeAreaView/SafeAreaView';
+import FloatingHeader from '../../components/Feed/FloatingHeader';
 
 const { height } = Dimensions.get('window');
 const ITEM_HEIGHT = height * 0.9;
@@ -42,7 +43,7 @@ const dummyReels = [
   // Add more...
 ];
 
-const ReelsScreen = () => {
+const ReelsScreen = ({ navigation }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const flatListRef = useRef();
 
@@ -60,33 +61,36 @@ const ReelsScreen = () => {
       backgroundColor="black"
       barStyle="light-content"
     >
-      <View style={{ height: ITEM_HEIGHT }}>
-        <FlatList
-          data={dummyReels}
-          keyExtractor={item => item.id}
-          pagingEnabled
-          showsVerticalScrollIndicator={false}
-          onViewableItemsChanged={onViewableItemsChanged}
-          viewabilityConfig={viewConfig}
-          getItemLayout={(data, index) => ({
-            length: ITEM_HEIGHT,
-            offset: ITEM_HEIGHT * index,
-            index,
-          })}
-          ref={flatListRef}
-          renderItem={({ item, index }) => (
-            <View style={{ height: ITEM_HEIGHT }}>
-              {index === currentIndex ? (
-                <ReelVideoPlayer reel={item} isVisible={true} />
-              ) : (
-                <Image
-                  source={{ uri: item.thumbnailUrl }}
-                  style={styles.thumbnail}
-                />
-              )}
-            </View>
-          )}
-        />
+      <View style={{ flex: 1 }}>
+        <FloatingHeader navigation={navigation} currentTab="DISCOVER" />
+        <View style={{ height: ITEM_HEIGHT }}>
+          <FlatList
+            data={dummyReels}
+            keyExtractor={item => item.id}
+            pagingEnabled
+            showsVerticalScrollIndicator={false}
+            onViewableItemsChanged={onViewableItemsChanged}
+            viewabilityConfig={viewConfig}
+            getItemLayout={(data, index) => ({
+              length: ITEM_HEIGHT,
+              offset: ITEM_HEIGHT * index,
+              index,
+            })}
+            ref={flatListRef}
+            renderItem={({ item, index }) => (
+              <View style={{ height: ITEM_HEIGHT }}>
+                {index === currentIndex ? (
+                  <ReelVideoPlayer reel={item} isVisible={true} />
+                ) : (
+                  <Image
+                    source={{ uri: item.thumbnailUrl }}
+                    style={styles.thumbnail}
+                  />
+                )}
+              </View>
+            )}
+          />
+        </View>
       </View>
     </AppSafeAreaView>
   );
