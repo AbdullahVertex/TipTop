@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   videoo: height => ({
     backgroundColor: 'black',
     width: '100%',
-    height: Platform.OS === 'ios' ? height : height - 50,
+    height: Platform.OS === 'ios' ? height - 60 : height - 50, // Adjusted for iOS tab bar
   }),
   loaderWrapper: {
     ...StyleSheet.absoluteFillObject,
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
   },
   progressBarContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: Platform.OS === 'ios' ? 10 : 0, // Add bottom margin for iOS
     left: 0,
     right: 0,
     height: 36,

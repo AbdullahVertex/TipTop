@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
   FlatList,
@@ -7,6 +7,7 @@ import {
   Dimensions,
   Image,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import ReelVideoPlayer from '../../components/HomePage/ReelPlayer';
 import AppSafeAreaView from '../../components/General/SafeAreaView/SafeAreaView';
 import FloatingHeader from '../../components/Feed/FloatingHeader';
@@ -45,6 +46,7 @@ const dummyReels = [
 
 const ReelsScreen = ({ navigation }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTabFocused, setIsTabFocused] = useState(true);
   const flatListRef = useRef();
 
   const onViewableItemsChanged = useRef(({ viewableItems }) => {
@@ -54,6 +56,19 @@ const ReelsScreen = ({ navigation }) => {
   }).current;
 
   const viewConfig = useRef({ viewAreaCoveragePercentThreshold: 80 }).current;
+
+  // Handle tab focus/blur to pause/resume videos
+  useFocusEffect(
+    React.useCallback(() => {
+      // Tab is focused
+      setIsTabFocused(true);
+
+      return () => {
+        // Tab is blurred (user switched to another tab)
+        setIsTabFocused(false);
+      };
+    }, []),
+  );
 
   return (
     <AppSafeAreaView
