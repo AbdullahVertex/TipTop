@@ -52,7 +52,7 @@ const FeedScreen = ({ navigation }) => {
 
   return (
     <AppSafeAreaView>
-      <TopNavBar notificationsCount={2} />
+      <TopNavBar navigation={navigation} notificationsCount={2} />
       <StoryBar stories={stories} />
       <FlatList
         data={posts}

@@ -2,62 +2,50 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
+  StyleSheet,
   Modal,
+  Dimensions,
   Pressable,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import { wp, hp } from '../../utils/helpers/responsive';
 
-const TopNavBar = ({
-  navigation,
-  currentTab = 'FEEDS',
-  title = 'Feeds ▼',
-  notificationsCount = 0,
-  onBellPress,
-  onSearchPress,
-  onAddPress,
-}) => {
+const { width } = Dimensions.get('window');
+
+const FloatingHeader = ({ navigation, currentTab = 'DISCOVER' }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const handleSelect = tab => {
     setDropdownVisible(false);
-    if (tab === 'DISCOVER') {
-      navigation.navigate('Home');
-    } else if (tab === 'FEEDS') {
+    if (tab === 'FEEDS') {
       navigation.navigate('Feed');
     }
   };
 
   return (
-    <View style={styles.container}>
-      {/* Left - Notification */}
-      <TouchableOpacity onPress={onBellPress} style={styles.iconWrapper}>
-        <Icon name="notifications-outline" size={hp('3%')} color="#000" />
-        {notificationsCount > 0 && (
-          <View style={styles.badge}>
-            <Text style={styles.badgeText}>{notificationsCount}</Text>
-          </View>
-        )}
-      </TouchableOpacity>
-
-      {/* Title */}
-      <TouchableOpacity onPress={() => setDropdownVisible(true)}>
-        <Text style={styles.title}>{title}</Text>
-      </TouchableOpacity>
-      {/* Right icons */}
-      <View style={styles.rightIcons}>
-        <TouchableOpacity onPress={onSearchPress} style={styles.iconWrapper}>
-          <Icon name="search-outline" size={hp('3%')} color="#000" />
+    <>
+      <View style={styles.headerContainer}>
+        <TouchableOpacity
+          style={styles.centerContainer}
+          activeOpacity={0.7}
+          onPress={() => setDropdownVisible(true)}
+        >
+          <Text style={styles.headerTitle}>{currentTab}</Text>
+          <Icon
+            name="chevron-down"
+            size={wp(5)}
+            color="#fff"
+            style={{ marginLeft: wp(1.5) }}
+          />
         </TouchableOpacity>
-        <TouchableOpacity onPress={onAddPress} style={styles.iconWrapper}>
-          <Icon name="add" size={hp('3.4%')} color="#000" />
+        <TouchableOpacity style={styles.infoButton} activeOpacity={0.7}>
+          <View style={styles.infoCircle}>
+            <Icon name="information-outline" size={wp(5)} color="#fff" />
+          </View>
         </TouchableOpacity>
       </View>
+
       {/* Dropdown Modal */}
       <Modal
         visible={dropdownVisible}
@@ -113,51 +101,52 @@ const TopNavBar = ({
           </View>
         </Pressable>
       </Modal>
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: wp('4%'),
-    paddingVertical: hp('1.2%'),
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  iconWrapper: {
-    position: 'relative',
-    marginHorizontal: wp('1.5%'),
-  },
-  badge: {
+  headerContainer: {
     position: 'absolute',
-    top: -4,
-    right: -6,
-    backgroundColor: '#FF3B30',
-    borderRadius: wp('3%'),
-    minWidth: wp('4.8%'),
-    height: wp('4.8%'),
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 2,
-  },
-  badgeText: {
-    color: '#fff',
-    fontSize: hp('1.4%'),
-    fontWeight: '700',
-  },
-  title: {
-    fontSize: hp('2.2%'),
-    fontWeight: '700',
-    color: '#000',
-  },
-  rightIcons: {
+    top: 0,
+    left: 0,
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-  }, // Dropdown styles
+    justifyContent: 'center',
+    paddingTop: hp(5), // for status bar
+    paddingBottom: hp(2),
+    backgroundColor: 'rgba(0,0,0,0.0)', // transparent
+    zIndex: 100,
+  },
+  centerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    alignSelf: 'center',
+  },
+  headerTitle: {
+    color: '#fff',
+    fontSize: hp(2.5),
+    fontWeight: 'bold',
+    letterSpacing: 1,
+  },
+  infoButton: {
+    position: 'absolute',
+    right: wp(6),
+    top: hp(5),
+  },
+  infoCircle: {
+    width: wp(4),
+    height: wp(4),
+    borderRadius: wp(5),
+    borderWidth: 2,
+    borderColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.0)',
+  },
+  // Dropdown styles
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.10)',
@@ -225,4 +214,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TopNavBar;
+export default FloatingHeader;
