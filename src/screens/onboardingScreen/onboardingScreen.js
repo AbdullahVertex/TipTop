@@ -16,6 +16,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import { useAppDispatch } from '../../hooks/redux';
+import { completeOnboarding } from '../../store/slices/authSlice';
 
 const { width } = Dimensions.get('window');
 
@@ -42,6 +44,7 @@ const slides = [
 
 const OnboardingScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useAppDispatch();
   const scrollRef = useRef();
   const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -50,13 +53,15 @@ const OnboardingScreen = () => {
     setCurrentSlide(slideIndex);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentSlide < slides.length - 1) {
       scrollRef.current.scrollTo({
         x: width * (currentSlide + 1),
         animated: true,
       });
     } else {
+      // Mark onboarding as completed and navigate to login
+      await dispatch(completeOnboarding());
       navigation.navigate('Login');
     }
   };

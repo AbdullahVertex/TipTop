@@ -15,6 +15,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Logo from '../../assets/svgs/Splash_Screen_Logo.svg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SplashScreen = () => {
   const navigation = useNavigation();
@@ -36,12 +37,54 @@ const SplashScreen = () => {
       }),
     ]).start();
 
-    // Navigate after delay
-    const timer = setTimeout(() => {
-      navigation.replace('Home');
-    }, 2000);
+    // Check authentication and navigate accordingly
+    const checkAuthAndNavigate = async () => {
+      try {
+        // Check if user has access token and user data
+        const [accessToken, userData, isFirstTime] =
+          await AsyncStorage.multiGet([
+            '@access_token',
+            '@user_data',
+            '@is_first_time',
+          ]);
 
-    return () => clearTimeout(timer);
+        const hasToken = accessToken[1] && accessToken[1] !== null;
+        const hasUserData = userData[1] && userData[1] !== null;
+        const isFirstTimeUser =
+          isFirstTime[1] === null || isFirstTime[1] === 'true';
+
+        console.log('Splash Screen - Auth Check:', {
+          hasToken,
+          hasUserData,
+          isFirstTimeUser,
+        });
+
+        // Wait for animation to complete
+        setTimeout(() => {
+          if (hasToken && hasUserData) {
+            // User is logged in - go to Home
+            console.log('Navigating to Home - User is logged in');
+            navigation.replace('Home');
+          } else if (isFirstTimeUser) {
+            // First time user - go to Onboarding
+            console.log('Navigating to Onboarding - First time user');
+            navigation.replace('Onboarding');
+          } else {
+            // Returning user but not logged in - go to Login
+            console.log('Navigating to Login - Returning user');
+            navigation.replace('Login');
+          }
+        }, 2000); // Wait 2 seconds for splash animation
+      } catch (error) {
+        console.error('Error checking auth in splash:', error);
+        // Default to onboarding on error
+        setTimeout(() => {
+          navigation.replace('Onboarding');
+        }, 2000);
+      }
+    };
+
+    checkAuthAndNavigate();
   }, []);
 
   return (
