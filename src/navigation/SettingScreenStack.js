@@ -2,16 +2,16 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SettingScreen from '../screens/SettingScreens/FinalSettingScreen/SettingScreen';
-import AccountSettingScreen from '../screens/SettingScreens/AccountSettingScreen/AccountSettingScreen';
+import AccountSettingScreen from '../screens/SettingScreens/accountSettingScreen/AccountSettingScreen';
 import MyQRCode from '../screens/SettingScreens/QrCodeScreen/MyQRCode';
+import ScanQRCode from '../screens/SettingScreens/QrCodeScreen/scanQRCode/ScanQRCode';
+import CoinWalletScreen from '../screens/SettingScreens/WalletScreens/WalletScreen';
+import BlockedUsersScreen from '../screens/SettingScreens/BlockedUsers Screen/BlockedUsersScreen';
 import SubscriptionScreen from '../screens/SettingScreens/SubscriptionScreen/SubscriptionScreen';
 import SavedPostsScreen from '../screens/SettingScreens/SavedPostsScreen/SavedPostsScreen';
 import NotificationSettingsScreen from '../screens/SettingScreens/Notifications_Screen/Notifications_Screen';
-import CoinWalletScreen from '../screens/SettingScreens/WalletScreens/WalletScreen';
-import BlockedUsersScreen from '../screens/SettingScreens/BlockedUsers Screen/BlockedUsersScreen';
-import ScanQRCode from '../screens/SettingScreens/QrCodeScreen/scanQRCode/ScanQRCode';
-import AddCardScreen from '../screens/SettingScreens/AddCardScreen/AddCardScreen';
 import LanguageSettingScreen from '../screens/SettingScreens/LanguageSettingScreen/LanguageSettingScreen';
+import AddCardScreen from '../screens/SettingScreens/AddCardScreen/AddCardScreen';
 
 const Stack = createNativeStackNavigator();
 

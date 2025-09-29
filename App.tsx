@@ -1,12 +1,20 @@
 import React from 'react';
-import Navigation from './src/navigation/Mainstack';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './src/store'; // make sure persistor is exported in store.ts
+import AppNavigator from './src/navigation/AppNavigator';
 
 function App() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <Navigation />;
-    </GestureHandlerRootView>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <AppNavigator />
+        </GestureHandlerRootView>
+      </PersistGate>
+    </Provider>
   );
 }
+
 export default App;

@@ -1,28 +1,26 @@
 import React, { useEffect, useRef } from 'react';
 import {
   View,
-  Text,
+  ActivityIndicator,
   StyleSheet,
   StatusBar,
-  Platform,
   Animated,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import PrimaryColors from '../../constants/colors';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../store';
+import { setFirstTimeUser } from '../../store/slices/authSlice';
 import { useNavigation } from '@react-navigation/native';
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../assets/svgs/Splash_Screen_Logo.svg';
-
+import PrimaryColors from '../../constants/colors';
 const SplashScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.8)).current;
 
   useEffect(() => {
-    // Animate text
+    // Animate logo
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -35,14 +33,23 @@ const SplashScreen = () => {
         useNativeDriver: true,
       }),
     ]).start();
+  });
+  const { isFirstTimeUser, hasUserData } = useSelector(
+    (state: RootState) => state.auth,
+  );
 
-    // Navigate after delay
-    const timer = setTimeout(() => {
-      navigation.replace('Home');
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      if (isFirstTimeUser) {
+        dispatch(setFirstTimeUser(false)); // ✅ mark that app has been opened once
+        navigation.replace('Onboarding'); // first time → go to onboarding
+      } else if (hasUserData) {
+        navigation.replace('Home'); // already logged in → go to home
+      } else {
+        navigation.replace('Login'); // not logged in → go to login
+      }
+    }, 1500); // splash delay
+  }, [isFirstTimeUser, hasUserData]);
 
   return (
     <LinearGradient
@@ -63,7 +70,7 @@ const SplashScreen = () => {
 
       <Animated.View
         style={[
-          styles.title,
+          styles.logoWrapper,
           {
             opacity: fadeAnim,
             transform: [{ scale: scaleAnim }],
@@ -76,6 +83,8 @@ const SplashScreen = () => {
   );
 };
 
+export default SplashScreen;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -83,11 +92,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  title: {
-    fontSize: wp('8.5%'),
-    fontWeight: 'bold',
-    color: '#fff',
+  logoWrapper: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
-
-export default SplashScreen;

@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -38,10 +39,13 @@ import CardSettingsItem from '../../../components/AddCard/CardSettingItem/CardSe
 import AddCardButton from '../../../components/AddCard/AddCardButton/AddCardButton';
 import BottomSheet from '@gorhom/bottom-sheet';
 import DeleteAccountSheet from '../../../components/DeleteAccountSheet/DeleteAccountSheet';
+import { useAppDispatch } from '../../../hooks/redux';
+import { logoutUser, clearError } from '../../../store/slices/authSlice';
 
 const svgColor = '#374151';
 
 const SettingScreen = ({ navigation }) => {
+  const dispatch = useAppDispatch();
   const [showFollowings, setShowFollowings] = useState(true);
   const [showChatButton, setShowChatButton] = useState(false);
   const [newsletterEnabled, setNewsletterEnabled] = useState(true);
@@ -77,6 +81,85 @@ const SettingScreen = ({ navigation }) => {
   };
   const handleAccountItemPress = item => {
     console.log(`${item} pressed`);
+
+    if (item === 'Sign Out') {
+      handleSignOut();
+    }
+  };
+
+  const handleSignOut = () => {
+    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Sign Out',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            console.log('Starting logout process...');
+
+            // Dispatch logout action
+            const result = await dispatch(logoutUser(false)); // false = logout only this device
+
+            if (logoutUser.fulfilled.match(result)) {
+              console.log('Logout successful');
+
+              // Show success message
+              Alert.alert('Success', 'You have been signed out successfully.', [
+                {
+                  text: 'OK',
+                  onPress: () => {
+                    // Clear any error state before navigating
+                    dispatch(clearError());
+                    // Navigate to login screen
+                    navigation.reset({
+                      index: 0,
+                      routes: [{ name: 'Login' }],
+                    });
+                  },
+                },
+              ]);
+            } else if (logoutUser.rejected.match(result)) {
+              console.error('Logout error:', result.payload);
+
+              // Even if API fails, still navigate to login since local storage is cleared
+              Alert.alert('Signed Out', 'You have been signed out locally.', [
+                {
+                  text: 'OK',
+                  onPress: () => {
+                    // Clear any error state before navigating
+                    dispatch(clearError());
+                    navigation.reset({
+                      index: 0,
+                      routes: [{ name: 'Login' }],
+                    });
+                  },
+                },
+              ]);
+            }
+          } catch (error) {
+            console.error('Logout error:', error);
+
+            // Fallback: still navigate to login
+            Alert.alert('Signed Out', 'You have been signed out.', [
+              {
+                text: 'OK',
+                onPress: () => {
+                  // Clear any error state before navigating
+                  dispatch(clearError());
+                  navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Login' }],
+                  });
+                },
+              },
+            ]);
+          }
+        },
+      },
+    ]);
   };
 
   const handleNotifications = () => {
@@ -152,7 +235,7 @@ const SettingScreen = ({ navigation }) => {
             ))}
           </SettingsSection>
           {/* Account Section */}
-          <SettingsSection title="Account">
+          {/* <SettingsSection title="Account">
             <AccountSettingsItem
               iconImage={icons.lock}
               title="Change Password"
@@ -177,7 +260,7 @@ const SettingScreen = ({ navigation }) => {
               onPress={() => handleAccountItemPress('Sign Out')}
               showArrow={true}
             />
-          </SettingsSection>
+          </SettingsSection> */}
 
           {/* Privacy Section */}
           <SettingsSection title="Privacy">

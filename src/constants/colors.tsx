@@ -6,7 +6,9 @@ const PrimaryColors = {
   White30percent_Opacity: 'rgba(255, 255, 255, 0.3)',
   PurpleText: '#CB65EF',
   White50percent_Opacity: '#ACABC280',
-  white: '#000'
+  white: '#000',
+  BRAND_PINK: '#A03C97',
+  CARD: '#FFFFFF',
 };
 
 export default PrimaryColors;

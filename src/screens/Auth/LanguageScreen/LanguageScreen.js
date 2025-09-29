@@ -7,10 +7,10 @@ import {
   SafeAreaView,
   Platform,
 } from 'react-native';
-import LanguageOption from '../../components/LanguageSelection/Language_Bar';
+import LanguageOption from '../../../components/LanguageSelection/Language_Bar';
 import LinearGradient from 'react-native-linear-gradient';
-import ContinueButton from '../../components/General/Button/button1';
-import SelectLanguage from '../../assets/svgs/SelectLanguage.svg';
+import ContinueButton from '../../../components/General/Button/button1';
+import SelectLanguage from '../../../assets/svgs/SelectLanguage.svg';
 import { useNavigation } from '@react-navigation/native';
 import {
   widthPercentageToDP as wp,
