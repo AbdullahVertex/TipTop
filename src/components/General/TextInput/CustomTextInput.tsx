@@ -50,6 +50,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
           value={value}
           onChangeText={onChangeText}
           onBlur={onBlur}
+          autoCapitalize="none"
           secureTextEntry={secure}
         />
         {password && (

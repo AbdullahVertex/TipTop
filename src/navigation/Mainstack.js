@@ -1,18 +1,10 @@
 // src/Navigation.js
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import SplashScreen from '../screens/splashscreen/splash';
-import LanguageSelectionScreen from '../screens/LanguageScreen/LanguageScreen';
-import OnboardingScreen from '../screens/onboardingScreen/onboardingScreen';
-import LoginInScreen from '../screens/LoginScreen/LoginScreen';
+import LanguageSelectionScreen from '../screens/Auth/LanguageScreen/LanguageScreen';
 import BottomNavigator from './BottonNavigation';
 import SettingScreenNavigation from './SettingScreenStack';
-import SignUpScreen from '../screens/SignUpSCreen/Index';
-import ForgotPassScreen from '../screens/ForgotPasswordScreen/ForgotPassScreen';
-import ForgotPassScreen2 from '../screens/ForgotPasswordScreen/ForgotPass2';
 import CommentsScreen from '../screens/CommentsScreen/CommentScreen';
-import FeedScreen from '../screens/FeedScreen/FeedScreen';
 import ProductListScreen from '../screens/Products/ProductListScreen/ProductListScreen';
 import ProductDetailScreen from '../screens/ProductDetailPage/ProductDetailScreen';
 import { GamesDetailScreen } from '../screens/GamesDetailScreen/GamesDetailScreen';
@@ -45,7 +37,6 @@ const Navigation = () => {
         component={ProductDetailScreen}
       />
       <Stack.Screen name="GamesDetailScreen" component={GamesDetailScreen} />
-
       <Stack.Screen name="SettingScreen" component={SettingScreenNavigation} />
     </Stack.Navigator>
   );

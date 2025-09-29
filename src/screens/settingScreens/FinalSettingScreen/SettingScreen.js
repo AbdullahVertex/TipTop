@@ -235,7 +235,7 @@ const SettingScreen = ({ navigation }) => {
             ))}
           </SettingsSection>
           {/* Account Section */}
-          <SettingsSection title="Account">
+          {/* <SettingsSection title="Account">
             <AccountSettingsItem
               iconImage={icons.lock}
               title="Change Password"
@@ -260,7 +260,7 @@ const SettingScreen = ({ navigation }) => {
               onPress={() => handleAccountItemPress('Sign Out')}
               showArrow={true}
             />
-          </SettingsSection>
+          </SettingsSection> */}
 
           {/* Privacy Section */}
           <SettingsSection title="Privacy">

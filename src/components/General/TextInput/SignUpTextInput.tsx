@@ -41,6 +41,7 @@ const LabeledPasswordInput: React.FC<Props> = ({
           style={styles.input}
           secureTextEntry={secureTextEntry && !visible}
           value={value}
+          autoCapitalize="none"
           onChangeText={onChangeText}
         />
         {secureTextEntry && (
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
   },
   inputRow: {
     height: hp('7%'),
-    backgroundColor: '#F3F3F3',
+    backgroundColor: 'rgba(250, 250, 250, 1)',
     paddingHorizontal: wp('4%'),
     flexDirection: 'row',
     alignItems: 'center',
@@ -79,6 +80,7 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
+    backgroundColor: 'rgba(250, 250, 250, 1)',
     fontSize: wp('4%'),
     color: '#111111',
   },

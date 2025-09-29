@@ -11,19 +11,20 @@ import {
   Alert,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import ContinueButton from '../../components/General/Button/button1';
-import GoogleButton from '../../components/General/Button/GoogleButton';
-import PrimaryColors from '../../constants/colors';
+import ContinueButton from '../../../components/General/Button/button1';
+import GoogleButton from '../../../components/General/Button/GoogleButton';
+import PrimaryColors from '../../../constants/colors';
 import { useNavigation } from '@react-navigation/native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import CustomTextInput from '../../components/General/TextInput/CustomTextInput';
+import CustomTextInput from '../../../components/General/TextInput/CustomTextInput';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { loginUser, clearError } from '../../store/slices/authSlice';
+import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
+import { login as loginAction } from '../../../store/slices/authSlice';
+import { useAuthApi } from '../../../hooks/useApi';
 
 // ✅ Validation schema with Yup
 const LoginSchema = Yup.object().shape({
@@ -38,59 +39,34 @@ const LoginSchema = Yup.object().shape({
 const LoginInScreen = () => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
-  const { user, isLoading, error, isAuthenticated } = useAppSelector(
-    state => state.auth,
-  );
-  const [apiError, setApiError] = useState('');
+  const { login, loading } = useAuthApi(); // custom hook API
+  const { error, user } = useAppSelector(state => state.auth);
 
-  // Clear any existing error state when component mounts
-  useEffect(() => {
-    dispatch(clearError());
-    setApiError('');
-  }, [dispatch]);
+  const [apiError, setApiError] = useState('');
 
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
       setApiError('');
-      dispatch(clearError());
 
-      // Prepare data for API
-      const loginData = {
-        email: values.email,
-        password: values.password,
-      };
+      const loginData = { email: values.email, password: values.password };
+      const result = await login(loginData); // call API
 
-      console.log('Logging in user with data:', loginData);
-      console.log(
-        'API URL:',
-        'https://dev-cup-strmng.vertexaitec.com/api/v1/auth/login',
-      );
+      if (result?.user && result?.tokens) {
+        // ✅ Save to Redux
+        dispatch(
+          loginAction({
+            user: result.user,
+            tokens: result.tokens,
+          }),
+        );
 
-      // Dispatch login action to Redux
-      const result = await dispatch(loginUser(loginData));
-
-      if (loginUser.fulfilled.match(result)) {
-        console.log('Login successful:', result.payload);
-
-        // Show success message
         Alert.alert(
           'Success',
-          `Welcome back, ${
-            result.payload.user.first_name || result.payload.user.email
-          }!`,
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                // Navigate to Home after successful login
-                navigation.navigate('Home');
-              },
-            },
-          ],
+          `Welcome back, ${result.user.first_name || result.user.email}!`,
+          [{ text: 'OK', onPress: () => navigation.navigate('Home' as never) }],
         );
-      } else if (loginUser.rejected.match(result)) {
-        console.error('Login error:', result.payload);
-        setApiError(result.payload as string);
+      } else {
+        throw new Error(result?.message || 'Login failed');
       }
     } catch (err: any) {
       console.error('Login error:', err);
@@ -157,14 +133,12 @@ const LoginInScreen = () => {
 
                   <TouchableOpacity
                     style={styles.forgot}
-                    onPress={() => {
-                      navigation.navigate('ForgotPass');
-                    }}
+                    onPress={() => navigation.navigate('ForgotPass')}
                   >
                     <Text style={styles.forgotText}>Forget Password?</Text>
                   </TouchableOpacity>
 
-                  {/* API Error Display */}
+                  {/* Error Display */}
                   {(error || apiError) && (
                     <View style={styles.errorContainer}>
                       <Text style={styles.errorText}>{error || apiError}</Text>
@@ -172,18 +146,16 @@ const LoginInScreen = () => {
                   )}
 
                   <ContinueButton
-                    title={isLoading ? 'Logging In...' : 'Log In'}
+                    title={loading ? 'Logging In...' : 'Log In'}
                     onPress={handleSubmit as any}
                     buttonStyle={{
-                      opacity: isLoading ? 0.7 : 1,
+                      opacity: loading ? 0.7 : 1,
                     }}
                   />
                 </View>
 
                 <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate('Signup');
-                  }}
+                  onPress={() => navigation.navigate('Signup')}
                   style={styles.createAccount}
                 >
                   <Text style={styles.createAccountText}>

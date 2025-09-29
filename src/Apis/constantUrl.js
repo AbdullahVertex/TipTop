@@ -1,5 +1,5 @@
 // API Base URL
-export const BASE_URL = 'https://dev-cup-strmng.vertexaitec.com';
+export const BASE_URL = 'https://tiptok-api.vertexaitec.com';
 
 // API Endpoints
 export const API_ENDPOINTS = {

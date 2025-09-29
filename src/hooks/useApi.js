@@ -31,15 +31,23 @@ export const useApi = () => {
       if (err.response?.data) {
         const errorData = err.response.data;
 
-        // Handle 422 validation errors with detail array
+        // Case 1: Validation array
         if (errorData.detail && Array.isArray(errorData.detail)) {
           errorMessage = errorData.detail.map(detail => detail.msg).join(', ');
         }
-        // Handle simple message structure
+        // Case 2: Explicit message field
         else if (errorData.message) {
           errorMessage = errorData.message;
         }
-        // Handle other error structures
+        // Case 3: Custom error or error property
+        else if (errorData.error) {
+          errorMessage = errorData.error;
+        }
+        // Case 4: Return entire object as JSON string (debugging)
+        else if (typeof errorData === 'object') {
+          errorMessage = JSON.stringify(errorData);
+        }
+        // Case 5: Plain string
         else if (typeof errorData === 'string') {
           errorMessage = errorData;
         }
@@ -146,6 +154,46 @@ export const useAuthApi = () => {
     async credentials => {
       try {
         const response = await post('/api/v1/auth/login', credentials);
+        console.log('Result', response);
+        return response;
+      } catch (err) {
+        throw err;
+      }
+    },
+    [post],
+  );
+
+  const OTP = useCallback(
+    async otp => {
+      try {
+        const response = await post('/api/v1/auth/verify-otp', otp);
+        return response;
+      } catch (err) {
+        throw err;
+      }
+    },
+    [post],
+  );
+
+  const resetPassword = useCallback(
+    async emailData => {
+      try {
+        const response = await post('/api/v1/auth/password/reset', emailData);
+        return response;
+      } catch (err) {
+        throw err;
+      }
+    },
+    [post],
+  );
+
+  const confirmPasswordReset = useCallback(
+    async resetData => {
+      try {
+        const response = await post(
+          '/api/v1/auth/password/reset/confirm',
+          resetData,
+        );
         return response;
       } catch (err) {
         throw err;
@@ -157,6 +205,9 @@ export const useAuthApi = () => {
   return {
     register,
     login,
+    OTP,
+    resetPassword,
+    confirmPasswordReset,
     loading,
     error,
     clearError,

@@ -8,19 +8,17 @@ import {
   Alert,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import AppSafeAreaView from '../../components/General/SafeAreaView/SafeAreaView';
+import AppSafeAreaView from '../../../components/General/SafeAreaView/SafeAreaView';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import LabeledPasswordInput from '../../components/General/TextInput/SignUpTextInput';
-import ContinueButton from '../../components/General/Button/button1';
+import LabeledPasswordInput from '../../../components/General/TextInput/SignUpTextInput';
+import ContinueButton from '../../../components/General/Button/button1';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { useAuthApi } from '../../hooks/useApi';
-
-const BRAND_PINK = '#A03C97';
-const CARD = '#FFFFFF';
+import { useAuthApi } from '../../../hooks/useApi';
+import PrimaryColors from '../../../constants/colors';
 
 // ✅ Validation schema
 const SignUpSchema = Yup.object().shape({
@@ -30,6 +28,9 @@ const SignUpSchema = Yup.object().shape({
   email: Yup.string()
     .email('Enter a valid email')
     .required('Email is required'),
+  username: Yup.string()
+    .min(6, 'Enter another Username')
+    .required('Username is required'),
   password: Yup.string()
     .min(6, 'Password must be at least 6 characters')
     .required('Password is required'),
@@ -45,6 +46,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
   const handleSignUp = async (values: {
     fullName: string;
     email: string;
+    username: string;
     password: string;
     rePassword: string;
   }) => {
@@ -55,15 +57,13 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
       // Prepare data for API
       const registerData = {
         email: values.email,
+        name: values.fullName,
         password: values.password,
         password_confirm: values.rePassword,
+        username: values.username,
       };
 
       console.log('Registering user with data:', registerData);
-      console.log(
-        'API URL:',
-        'https://dev-cup-strmng.vertexaitec.com/api/v1/auth/register',
-      );
 
       // Call register API
       const response = await register(registerData);
@@ -76,7 +76,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
       Alert.alert('Success', successMessage, [
         {
           text: 'OK',
-          onPress: () => navigation.navigate('Login'),
+          onPress: () => navigation.navigate('OTP', { registerData }),
         },
       ]);
     } catch (err: any) {
@@ -115,6 +115,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
             initialValues={{
               fullName: '',
               email: '',
+              username: '',
               password: '',
               rePassword: '',
             }}
@@ -131,22 +132,31 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
             }) => (
               <>
                 <LabeledPasswordInput
-                  label="Full Name"
+                  label=" Enter Full Name"
                   placeholder="Enter Your Full Name"
                   value={values.fullName}
                   onChangeText={handleChange('fullName')}
                   error={errors.fullName}
-                  touched={touched.fullName}
+                  //  touched={touched.fullName}
                   secureTextEntry={false}
+                />
+                <LabeledPasswordInput
+                  label="Username"
+                  placeholder="Enter Your Username"
+                  value={values.username}
+                  onChangeText={handleChange('username')}
+                  secureTextEntry={false}
+                  error={errors.username}
+                  //    touched={touched.password}
                 />
 
                 <LabeledPasswordInput
-                  label="Email"
+                  label="Enter Email"
                   placeholder="Enter Your Email"
                   value={values.email}
                   onChangeText={handleChange('email')}
                   error={errors.email}
-                  touched={touched.email}
+                  //   touched={touched.email}
                   secureTextEntry={false}
                 />
 
@@ -156,7 +166,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
                   value={values.password}
                   onChangeText={handleChange('password')}
                   error={errors.password}
-                  touched={touched.password}
+                  //    touched={touched.password}
                 />
 
                 <LabeledPasswordInput
@@ -165,7 +175,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
                   value={values.rePassword}
                   onChangeText={handleChange('rePassword')}
                   error={errors.rePassword}
-                  touched={touched.rePassword}
+                  // touched={touched.rePassword}
                 />
 
                 <View style={{ height: hp('3%') }} />
@@ -219,7 +229,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    backgroundColor: CARD,
+    backgroundColor: PrimaryColors.CARD,
     paddingTop: hp('2%'),
     borderRadius: wp('4%'),
   },
@@ -233,7 +243,7 @@ const styles = StyleSheet.create({
     marginTop: hp('1%'),
     fontSize: wp('8%'),
     fontFamily: 'benzin-bold',
-    color: BRAND_PINK,
+    color: PrimaryColors.BRAND_PINK,
     letterSpacing: 0.5,
   },
   termsWrap: {

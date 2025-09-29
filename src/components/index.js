@@ -8,5 +8,6 @@ export { default as MoreOptionsItem } from './MyAccount/MoreOptionsItem/MoreOpti
 export { default as QRCodeCard } from './QrCode/QRCodeCard/QRCodeCard';
 export { default as ActionButtons } from './QrCode/ActionButtons/ActionButtons';
 export { default as BlockedUserItem } from './BlockedContacts/BlockedUserItem/BlockedUserItem';
+export { default as OTPInput } from './General/OTPInput/OTPInput';
 // export * from './Icons/SettingsIcons';
 // export * from './AccountIcons/AccountIcons';

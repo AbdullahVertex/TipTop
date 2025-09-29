@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Pressable,
   Dimensions,
+  Alert,
 } from 'react-native';
 import AccountSettingsItem from '../../../components/MyAccount/AccountSettingsItem/AccountSettingsItem';
 import SettingsSection from '../../../components/Settings/SettingsSection/SettingsSection';
@@ -23,7 +24,8 @@ import {
 } from 'react-native-responsive-screen';
 import BottomSheet from '@gorhom/bottom-sheet';
 import DeleteAccountSheet from '../../../components/DeleteAccountSheet/DeleteAccountSheet';
-
+import { useDispatch } from 'react-redux';
+import { logout } from '../../../store/slices/authSlice';
 const { width, height } = Dimensions.get('window');
 
 const AccountSettingScreen = ({ navigation }) => {
@@ -31,7 +33,7 @@ const AccountSettingScreen = ({ navigation }) => {
   const [newsletterEnabled, setNewsletterEnabled] = useState(true);
   const [textMessagesEnabled, setTextMessagesEnabled] = useState(false);
   const [phoneCallsEnabled, setPhoneCallsEnabled] = useState(false);
-
+  const dispatch = useDispatch();
   // Bottom sheet ref and state
   const bottomSheetRef = useRef(null);
   const [isDeleteSheetOpen, setIsDeleteSheetOpen] = useState(false);
@@ -64,9 +66,30 @@ const AccountSettingScreen = ({ navigation }) => {
   const handleEditName = () => {
     console.log('Edit name pressed');
   };
-
   const handleAccountItemPress = item => {
-    console.log(`${item} pressed`);
+    if (item === 'Sign Out') {
+      Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Sign Out',
+          style: 'destructive',
+          onPress: () => {
+            dispatch(logout());
+            navigation.reset({
+              // ✅ reset stack and go to login
+              index: 0,
+              routes: [{ name: 'Login' }],
+            });
+          },
+        },
+      ]);
+      // ✅ clear user/session
+    } else {
+      console.log(`${item} pressed`);
+    }
   };
 
   const handleMoreOptionsPress = item => {

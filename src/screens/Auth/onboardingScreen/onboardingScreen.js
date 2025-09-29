@@ -16,8 +16,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { useAppDispatch } from '../../hooks/redux';
-import { completeOnboarding } from '../../store/slices/authSlice';
+import { useAppDispatch } from '../../../hooks/redux';
+import { completeOnboarding } from '../../../store/slices/authSlice';
+import Images from '../../../assets/images/Images';
 
 const { width } = Dimensions.get('window');
 
@@ -26,19 +27,19 @@ const slides = [
     id: 1,
     title: 'FROM AROUND\nTHE WORLD',
     description: 'Share your talent with the\npeople around the world',
-    image: require('../../assets/images/Onboarding.png'),
+    image: Images.Onboarding,
   },
   {
     id: 2,
-    title: 'EXPRESS\nYOURSELF',
-    description: 'Create, share and grow\nwith confidence',
-    image: require('../../assets/images/Onboarding.png'),
+    title: 'GET\nAPPRICIATED',
+    description: 'Collect likes and comments from your fans',
+    image: Images.Onboarding2,
   },
   {
     id: 3,
-    title: 'GET\nDISCOVERED',
-    description: 'Be seen by millions and\ngain opportunities',
-    image: require('../../assets/images/Onboarding.png'),
+    title: 'MULTIPLE SOCIAL\nGATEWAYS',
+    description: 'Collect likes and comments from your fans',
+    image: Images.Onboarding3,
   },
 ];
 
