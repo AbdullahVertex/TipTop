@@ -25,6 +25,26 @@ import * as Yup from 'yup';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { login as loginAction } from '../../../store/slices/authSlice';
 import { useAuthApi } from '../../../hooks/useApi';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
+import { Ios_id, Web_Client_id } from '../../../Apis/GoogkeKey';
+import { signIn } from '../../../Apis/GoogleAuth';
+
+GoogleSignin.configure({
+  webClientId: Web_Client_id, // client ID of type WEB for your server. Required to get the `idToken` on the user object, and for offline access.
+  scopes: [
+    /* what APIs you want to access on behalf of the user, default is email and profile
+    this is just an example, most likely you don't need this option at all! */
+    'https://www.googleapis.com/auth/drive.readonly',
+  ],
+
+  forceCodeForRefreshToken: false, // [Android] related to `serverAuthCode`, read the docs link below *.
+  iosClientId: Ios_id, // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+  profileImageSize: 120, // [iOS] The desired height (and width) of the profile image. Defaults to 120px
+});
 
 // ✅ Validation schema with Yup
 const LoginSchema = Yup.object().shape({
@@ -155,7 +175,7 @@ const LoginInScreen = () => {
                 </View>
 
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('Signup')}
+                  onPress={() => navigation.navigate('Signup' as never)}
                   style={styles.createAccount}
                 >
                   <Text style={styles.createAccountText}>
@@ -169,9 +189,7 @@ const LoginInScreen = () => {
                     <Text style={styles.dividerText}>Continue With</Text>
                     <View style={styles.line} />
                   </View>
-
-                  <GoogleButton onPress={() => console.log('Google Sign-In')} />
-
+                  <GoogleButton onPress={signIn} />
                   <Text style={styles.terms}>
                     By proceeding forward, You agree to the,
                     <Text style={styles.link}> Privacy Policy </Text>
