@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   ScrollView,
   View,
@@ -8,7 +8,8 @@ import {
   StatusBar,
   TouchableOpacity,
   Platform,
-  Alert,
+  ActivityIndicator,
+  Modal,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import ContinueButton from '../../../components/General/Button/button1';
@@ -25,25 +26,19 @@ import * as Yup from 'yup';
 import { useAppDispatch, useAppSelector } from '../../../hooks/redux';
 import { login as loginAction } from '../../../store/slices/authSlice';
 import { useAuthApi } from '../../../hooks/useApi';
-import {
-  GoogleSignin,
-  GoogleSigninButton,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Ios_id, Web_Client_id } from '../../../Apis/GoogkeKey';
 import { signIn } from '../../../Apis/GoogleAuth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AsyncValues } from '../../../utils/AsyncValues';
+import Toast from 'react-native-toast-message';
 
 GoogleSignin.configure({
-  webClientId: Web_Client_id, // client ID of type WEB for your server. Required to get the `idToken` on the user object, and for offline access.
-  scopes: [
-    /* what APIs you want to access on behalf of the user, default is email and profile
-    this is just an example, most likely you don't need this option at all! */
-    'https://www.googleapis.com/auth/drive.readonly',
-  ],
-
-  forceCodeForRefreshToken: false, // [Android] related to `serverAuthCode`, read the docs link below *.
-  iosClientId: Ios_id, // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
-  profileImageSize: 120, // [iOS] The desired height (and width) of the profile image. Defaults to 120px
+  webClientId: Web_Client_id,
+  scopes: ['https://www.googleapis.com/auth/drive.readonly'],
+  forceCodeForRefreshToken: false,
+  iosClientId: Ios_id,
+  profileImageSize: 120,
 });
 
 // ✅ Validation schema with Yup
@@ -59,14 +54,16 @@ const LoginSchema = Yup.object().shape({
 const LoginInScreen = () => {
   const navigation = useNavigation();
   const dispatch = useAppDispatch();
-  const { login, loading } = useAuthApi(); // custom hook API
-  const { error, user } = useAppSelector(state => state.auth);
+  const { login } = useAuthApi(); // custom API hook
+  const { error } = useAppSelector(state => state.auth);
 
   const [apiError, setApiError] = useState('');
+  const [loading, setLoading] = useState(false); // loader state
 
   const handleLogin = async (values: { email: string; password: string }) => {
     try {
       setApiError('');
+      setLoading(true); // show loader
 
       const loginData = { email: values.email, password: values.password };
       const result = await login(loginData); // call API
@@ -79,18 +76,29 @@ const LoginInScreen = () => {
             tokens: result.tokens,
           }),
         );
-
-        Alert.alert(
-          'Success',
-          `Welcome back, ${result.user.first_name || result.user.email}!`,
-          [{ text: 'OK', onPress: () => navigation.navigate('Home' as never) }],
+        await AsyncStorage.setItem(
+          AsyncValues.UserData,
+          JSON.stringify(result),
         );
+
+        Toast.show({
+          type: 'success',
+          text1: 'Welcome back!',
+          text2: `${result.user.first_name || result.user.email}`,
+        });
+        navigation.reset({
+          // ✅ reset stack and go to login
+          index: 0,
+          routes: [{ name: 'Home' as never }],
+        });
       } else {
         throw new Error(result?.message || 'Login failed');
       }
     } catch (err: any) {
       console.error('Login error:', err);
       setApiError(err.message || 'Login failed. Please try again.');
+    } finally {
+      setLoading(false); // hide loader after API completes
     }
   };
 
@@ -110,6 +118,20 @@ const LoginInScreen = () => {
         translucent
         backgroundColor="transparent"
       />
+
+      {/* Loader Modal */}
+      <Modal
+        transparent
+        visible={loading}
+        animationType="fade"
+        onRequestClose={() => {}}
+      >
+        <View style={styles.loaderOverlay}>
+          <ActivityIndicator size="large" color="#fff" />
+          <Text style={styles.loaderText}>Logging in...</Text>
+        </View>
+      </Modal>
+
       <SafeAreaView style={{ flex: 1 }}>
         <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
           <Formik
@@ -166,11 +188,10 @@ const LoginInScreen = () => {
                   )}
 
                   <ContinueButton
-                    title={loading ? 'Logging In...' : 'Log In'}
+                    title={'Log In'}
                     onPress={handleSubmit as any}
-                    buttonStyle={{
-                      opacity: loading ? 0.7 : 1,
-                    }}
+                    buttonStyle={{ opacity: loading ? 0.7 : 1 }}
+                    disabled={loading}
                   />
                 </View>
 
@@ -208,6 +229,18 @@ const LoginInScreen = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  loaderOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loaderText: {
+    color: '#fff',
+    marginTop: 12,
+    fontSize: 16,
+    fontWeight: '600',
+  },
   content: {
     padding: wp('7%'),
     paddingTop: Platform.OS === 'android' ? hp('5%') : wp('7%'),

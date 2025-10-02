@@ -13,6 +13,8 @@ import { useNavigation } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Logo from '../../assets/svgs/Splash_Screen_Logo.svg';
 import PrimaryColors from '../../constants/colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AsyncValues } from '../../utils/AsyncValues';
 const SplashScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -34,22 +36,35 @@ const SplashScreen = () => {
       }),
     ]).start();
   });
-  const { isFirstTimeUser, hasUserData } = useSelector(
-    (state: RootState) => state.auth,
-  );
-
+  const AuthFlow = async () => {
+    const storedData = await AsyncStorage.getItem(AsyncValues.UserData);
+    const userData = storedData ? JSON.parse(storedData) : null;
+    if (userData) {
+      navigation.replace('Home');
+    } else {
+      const OnboardingSeen = await AsyncStorage.getItem(
+        AsyncValues.OnboardingSeen,
+      );
+      if (OnboardingSeen === 'true') {
+        navigation.replace('Login');
+      } else {
+        navigation.replace('Onboarding');
+      }
+    }
+  };
   useEffect(() => {
     setTimeout(() => {
-      if (isFirstTimeUser) {
-        dispatch(setFirstTimeUser(false)); // ✅ mark that app has been opened once
-        navigation.replace('Onboarding'); // first time → go to onboarding
-      } else if (hasUserData) {
-        navigation.replace('Home'); // already logged in → go to home
-      } else {
-        navigation.replace('Login'); // not logged in → go to login
-      }
+      AuthFlow();
+      // if (isFirstTimeUser) {
+      //   dispatch(setFirstTimeUser(false)); // ✅ mark that app has been opened once
+      //   navigation.replace('Onboarding'); // first time → go to onboarding
+      // } else if (hasUserData) {
+      //   navigation.replace('Home'); // already logged in → go to home
+      // } else {
+      //   navigation.replace('Login'); // not logged in → go to login
+      // }
     }, 1500); // splash delay
-  }, [isFirstTimeUser, hasUserData]);
+  }, []);
 
   return (
     <LinearGradient

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import AppSafeAreaView from '../../../components/General/SafeAreaView/SafeAreaView';
 import Header from '../../../components/General/Headers/GeneralHeader';
 import { wp } from '../../../utils/helpers/responsive';
@@ -9,8 +9,10 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useAuthApi } from '../../../hooks/useApi';
+import Toast from 'react-native-toast-message';
+import PrimaryColors from '../../../constants/colors';
 
-// ✅ Validation schema with Yup
+// ✅ Validation schema
 const ConfirmPasswordSchema = Yup.object().shape({
   new_password: Yup.string()
     .min(6, 'Password should be at least 6 characters')
@@ -24,16 +26,17 @@ const ConfirmPassScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { confirmPasswordReset, loading, error, clearError } = useAuthApi();
-  const { email, otp_code } = route.params;
+  const { email, otp_code } = route.params as any;
   const [apiError, setApiError] = useState('');
+  const [showLoader, setShowLoader] = useState(false);
 
   // Handle form submission
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values: any, { setSubmitting }: any) => {
     try {
       setApiError('');
       clearError();
+      setShowLoader(true);
 
-      // Prepare data for API
       const resetData = {
         email: email,
         otp_code: otp_code,
@@ -44,37 +47,43 @@ const ConfirmPassScreen = () => {
 
       console.log('Confirming password reset with data:', resetData);
 
-      // Call API
       const result = await confirmPasswordReset(resetData);
 
       if (result?.message) {
-        // Show success message
-        Alert.alert('Success', 'Your password has been reset successfully.', [
-          {
-            text: 'OK',
-            onPress: () => {
-              // Navigate to login screen
-              navigation.reset({
-                // ✅ reset stack and go to login
-                index: 0,
-                routes: [{ name: 'Login' }],
-              });
-            },
-          },
-        ]);
+        Toast.show({
+          type: 'success',
+          text1: 'Reset Successful',
+          text2:
+            result?.message || 'Your password has been reset successfully.',
+        });
+
+        setTimeout(() => {
+          setShowLoader(false);
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' as never }],
+          });
+        }, 1000);
       } else {
         throw new Error(result?.message || 'Failed to reset password');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Password reset confirmation error:', err);
+      setShowLoader(false);
       setApiError(err.message || 'Failed to reset password. Please try again.');
+
+      Toast.show({
+        type: 'error',
+        text1: 'Reset Failed ',
+        text2: err?.message || 'Please try again.',
+      });
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <AppSafeAreaView>
+    <AppSafeAreaView style={{ flex: 1 }}>
       <Header title="Reset Password" />
       <Text style={styles.Heading}>
         Enter your new password to complete the reset process
@@ -125,13 +134,21 @@ const ConfirmPassScreen = () => {
             )}
 
             <GradientButton
-              onPress={handleSubmit}
-              disabled={loading || isSubmitting}
-              title={loading ? 'Resetting...' : 'Reset Password'}
+              onPress={handleSubmit as any}
+              disabled={loading || isSubmitting || showLoader}
+              title={loading || showLoader ? 'Resetting...' : 'Reset Password'}
             />
           </>
         )}
       </Formik>
+
+      {/* ✅ Fullscreen Loader */}
+      {showLoader && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color={PrimaryColors.BRAND_PINK} />
+          <Text style={styles.loadingText}>Resetting Password...</Text>
+        </View>
+      )}
     </AppSafeAreaView>
   );
 };
@@ -156,6 +173,23 @@ const styles = StyleSheet.create({
     color: '#F44336',
     fontSize: wp('3.5%'),
     textAlign: 'center',
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
+  },
+  loadingText: {
+    marginTop: 10,
+    color: 'white',
+    fontSize: wp('4%'),
+    fontWeight: '600',
   },
 });
 

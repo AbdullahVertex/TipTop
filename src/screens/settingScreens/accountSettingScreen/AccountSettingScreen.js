@@ -26,6 +26,8 @@ import BottomSheet from '@gorhom/bottom-sheet';
 import DeleteAccountSheet from '../../../components/DeleteAccountSheet/DeleteAccountSheet';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../../store/slices/authSlice';
+import { AsyncValues } from '../../../utils/AsyncValues';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const { width, height } = Dimensions.get('window');
 
 const AccountSettingScreen = ({ navigation }) => {
@@ -76,19 +78,33 @@ const AccountSettingScreen = ({ navigation }) => {
         {
           text: 'Sign Out',
           style: 'destructive',
-          onPress: () => {
-            dispatch(logout());
-            navigation.reset({
-              // ✅ reset stack and go to login
-              index: 0,
-              routes: [{ name: 'Login' }],
-            });
+          onPress: async () => {
+            try {
+              dispatch(logout());
+              await AsyncStorage.removeItem(AsyncValues.UserData);
+              navigation.reset({
+                // ✅ reset stack and go to login
+                index: 0,
+                routes: [{ name: 'Login' }],
+              });
+            } catch (error) {
+              Alert.alert(
+                'Error occured',
+                'An unknown error occured during logging out.Please try again later',
+                [{ text: 'ok' }],
+              );
+            }
           },
         },
       ]);
       // ✅ clear user/session
+
+      //
     } else {
       console.log(`${item} pressed`);
+    }
+    if (item === 'Change Password') {
+      navigation.navigate('ChangePass');
     }
   };
 

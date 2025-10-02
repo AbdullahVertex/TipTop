@@ -9,6 +9,7 @@ import SignUpScreen from '../screens/Auth/SignUpSCreen/Index';
 import OTPVerification from '../screens/Auth/OtpVerification/OtpVerification';
 import ForgotPassScreen from '../screens/Auth/ForgotPasswordScreen/ForgotPassScreen';
 import ForgotPassScreen2 from '../screens/Auth/ForgotPasswordScreen/ForgotPass2';
+import ChangePassScreen from '../screens/Auth/ChangePassword/ChangePassword';
 
 const Stack = createStackNavigator();
 
@@ -29,7 +30,7 @@ const AppNavigator = () => {
           name="ConfirmPass"
           component={ForgotPassScreen2 as never}
         />
-
+        <Stack.Screen name="ChangePass" component={ChangePassScreen as never} />
         <Stack.Screen name="Home" component={Navigation} />
       </Stack.Navigator>
     </NavigationContainer>

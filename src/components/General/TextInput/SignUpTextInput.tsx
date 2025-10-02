@@ -11,8 +11,10 @@ interface Props {
   placeholder?: string;
   value: string;
   onChangeText: (text: string) => void;
+  onBlur?: () => void; // ✅ add onBlur for Formik
   secureTextEntry?: boolean;
   error?: string; // Validation error message
+  touched?: boolean; // ✅ only show error if touched
 }
 
 const LabeledPasswordInput: React.FC<Props> = ({
@@ -20,8 +22,10 @@ const LabeledPasswordInput: React.FC<Props> = ({
   placeholder,
   value,
   onChangeText,
+  onBlur,
   secureTextEntry = true,
   error,
+  touched,
 }) => {
   const [visible, setVisible] = useState(false);
 
@@ -32,7 +36,7 @@ const LabeledPasswordInput: React.FC<Props> = ({
       <View
         style={[
           styles.inputRow,
-          error ? { borderColor: 'red', borderWidth: 1 } : {},
+          error && touched ? { borderColor: 'red', borderWidth: 1 } : {},
         ]}
       >
         <TextInput
@@ -43,10 +47,11 @@ const LabeledPasswordInput: React.FC<Props> = ({
           value={value}
           autoCapitalize="none"
           onChangeText={onChangeText}
+          onBlur={onBlur} // ✅ hook into Formik
         />
         {secureTextEntry && (
           <Ionicons
-            name={visible ? 'eye-off-outline' : 'eye-outline'}
+            name={visible ? 'eye-outline' : 'eye-off-outline'}
             size={wp('5%')}
             color="#9F9F9F"
             onPress={() => setVisible(prev => !prev)}
@@ -54,7 +59,8 @@ const LabeledPasswordInput: React.FC<Props> = ({
         )}
       </View>
 
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {/* ✅ only show error if touched */}
+      {touched && error ? <Text style={styles.errorText}>{error}</Text> : null}
     </View>
   );
 };
