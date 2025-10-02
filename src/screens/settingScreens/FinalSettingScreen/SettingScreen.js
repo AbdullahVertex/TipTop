@@ -41,6 +41,7 @@ import BottomSheet from '@gorhom/bottom-sheet';
 import DeleteAccountSheet from '../../../components/DeleteAccountSheet/DeleteAccountSheet';
 import { useAppDispatch } from '../../../hooks/redux';
 import { logoutUser, clearError } from '../../../store/slices/authSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const svgColor = '#374151';
 

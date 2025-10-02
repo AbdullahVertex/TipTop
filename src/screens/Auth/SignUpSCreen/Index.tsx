@@ -5,7 +5,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Alert,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AppSafeAreaView from '../../../components/General/SafeAreaView/SafeAreaView';
@@ -19,6 +20,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { useAuthApi } from '../../../hooks/useApi';
 import PrimaryColors from '../../../constants/colors';
+import Toast from 'react-native-toast-message';
 
 // ✅ Validation schema
 const SignUpSchema = Yup.object().shape({
@@ -54,7 +56,6 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
       setApiError('');
       clearError();
 
-      // Prepare data for API
       const registerData = {
         email: values.email,
         name: values.fullName,
@@ -63,31 +64,38 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
         username: values.username,
       };
 
-      console.log('Registering user with data:', registerData);
-
-      // Call register API
       const response = await register(registerData);
 
-      console.log('Registration successful:', response);
+      // ✅ Success toast
+      Toast.show({
+        type: 'success',
+        text1: 'Account Created 🎉',
+        text2: response?.message || 'Account created successfully!',
+      });
 
-      // Show success message using the API response message
-      const successMessage =
-        response?.message || 'Account created successfully!';
-      Alert.alert('Success', successMessage, [
-        {
-          text: 'OK',
-          onPress: () => navigation.navigate('OTP', { registerData }),
-        },
-      ]);
+      // ✅ Navigate after a short delay so toast is visible
+      setTimeout(() => {
+        navigation.navigate('OTP', { registerData });
+      }, 1200);
     } catch (err: any) {
       console.error('Registration error:', err);
-      console.log('Error', err);
       setApiError(err.message || 'Registration failed. Please try again.');
     }
   };
 
   return (
     <AppSafeAreaView style={{ flex: 1 }}>
+      <Modal
+        transparent
+        visible={loading}
+        animationType="fade"
+        onRequestClose={() => {}}
+      >
+        <View style={styles.loaderOverlay}>
+          <ActivityIndicator size="large" color="#fff" />
+          <Text style={styles.loaderText}>Logging in...</Text>
+        </View>
+      </Modal>
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: hp('5%') }}
@@ -122,14 +130,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
             validationSchema={SignUpSchema}
             onSubmit={handleSignUp}
           >
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              touched,
-            }) => (
+            {({ handleChange, handleSubmit, touched, values, errors }) => (
               <>
                 <LabeledPasswordInput
                   label=" Enter Full Name"
@@ -137,8 +138,8 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
                   value={values.fullName}
                   onChangeText={handleChange('fullName')}
                   error={errors.fullName}
-                  //  touched={touched.fullName}
                   secureTextEntry={false}
+                  touched={touched.fullName}
                 />
                 <LabeledPasswordInput
                   label="Username"
@@ -147,35 +148,32 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
                   onChangeText={handleChange('username')}
                   secureTextEntry={false}
                   error={errors.username}
-                  //    touched={touched.password}
+                  touched={touched.username}
                 />
-
                 <LabeledPasswordInput
                   label="Enter Email"
                   placeholder="Enter Your Email"
                   value={values.email}
                   onChangeText={handleChange('email')}
                   error={errors.email}
-                  //   touched={touched.email}
                   secureTextEntry={false}
+                  touched={touched.email}
                 />
-
                 <LabeledPasswordInput
                   label="Password"
                   placeholder="Enter Your Password"
                   value={values.password}
                   onChangeText={handleChange('password')}
                   error={errors.password}
-                  //    touched={touched.password}
+                  touched={touched.password}
                 />
-
                 <LabeledPasswordInput
                   label="Re-Type Password"
                   placeholder="Re-type Your Password"
                   value={values.rePassword}
                   onChangeText={handleChange('rePassword')}
                   error={errors.rePassword}
-                  // touched={touched.rePassword}
+                  touched={touched.rePassword}
                 />
 
                 <View style={{ height: hp('3%') }} />
@@ -196,6 +194,7 @@ const SignUpScreen = ({ navigation }: { navigation: any }) => {
                   secondStyle={{ color: 'white' }}
                   title={loading ? 'Creating Account...' : 'Create Account'}
                   onPress={handleSubmit as any}
+                  disabled={loading}
                 />
               </>
             )}
@@ -245,6 +244,18 @@ const styles = StyleSheet.create({
     fontFamily: 'benzin-bold',
     color: PrimaryColors.BRAND_PINK,
     letterSpacing: 0.5,
+  },
+  loaderOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loaderText: {
+    color: '#fff',
+    marginTop: 12,
+    fontSize: 16,
+    fontWeight: '600',
   },
   termsWrap: {
     alignItems: 'center',

@@ -1,34 +1,38 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import AppSafeAreaView from '../../../components/General/SafeAreaView/SafeAreaView';
-import { ScrollView } from 'react-native-gesture-handler';
 import { hp, wp } from '../../../utils/helpers/responsive';
 import PrimaryColors from '../../../constants/colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import OTPInput from '../../../components/General/OTPInput/OTPInput';
-import { useApi, useAuthApi } from '../../../hooks/useApi';
-
-interface Props {
-  title: string;
-  message: string;
-  email: string;
-}
+import { useAuthApi } from '../../../hooks/useApi';
+import Toast from 'react-native-toast-message';
 
 const OTPVerification = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { register, OTP, clearError } = useAuthApi();
   const { registerData, flowType = 'registration' } = route.params as any;
-  console.log(registerData);
 
+  const [loading, setLoading] = useState(false);
+
+  // ✅ OTP Complete
   const handleOTPComplete = async (otp: {
     email: string;
     otp_code: string;
   }) => {
-    console.log('OTP entered:', otp);
     try {
+      setLoading(true);
       if (flowType === 'password_reset') {
+        setLoading(false);
         (navigation as any).navigate('ConfirmPass', {
           email: otp.email,
           otp_code: otp.otp_code,
@@ -36,69 +40,61 @@ const OTPVerification = () => {
       } else {
         const responseData = { email: otp.email, otp_code: otp.otp_code };
         const response = await OTP(responseData);
-        const successMessage = response?.message || 'Otp Verified Successfully';
-        Alert.alert('Success', successMessage, [
-          {
-            text: 'OK',
-            onPress: () => navigation.navigate('Login' as never),
-          },
-        ]);
+
+        Toast.show({
+          type: 'success',
+          text1: 'OTP Verified ✅',
+          text2: response?.message || 'OTP verified successfully!',
+        });
+
+        setTimeout(() => {
+          setLoading(false);
+          navigation.navigate('Login' as never);
+        }, 1000);
       }
     } catch (err: any) {
       console.error('OTP verification error:', err);
-      console.log('Error', err);
-      Alert.alert('Verification Failed', err?.message || 'Enter Again');
+      setLoading(false);
+      Toast.show({
+        type: 'error',
+        text1: 'Verification Failed ❌',
+        text2: err?.message || 'Enter OTP again.',
+      });
     }
   };
 
-  const handleResend = () => {
-    console.log('Resend OTP requested');
+  // ✅ Resend OTP
+  const handleResend = async () => {
+    try {
+      setLoading(true);
+      clearError();
 
-    const handleSignUp = async (values: {
-      fullName: string;
-      email: string;
-      password: string;
-      rePassword: string;
-      username: string;
-    }) => {
-      try {
-        clearError();
+      const registerData1 = {
+        email: registerData.email,
+        name: registerData.name,
+        password: registerData.password,
+        password_confirm: registerData.password_confirm,
+        username: registerData.username,
+      };
 
-        // Prepare data for API
-        const registerData1 = {
-          email: values.email,
-          name: values.fullName,
-          password: values.password,
-          password_confirm: values.rePassword,
-          username: values.username,
-        };
+      const response = await register(registerData1);
 
-        console.log('Registering user with data:', registerData1);
+      Toast.show({
+        type: 'success',
+        text1: 'OTP Resent 📩',
+        text2: response?.message || 'New OTP sent to your email!',
+      });
 
-        // Call register API
-        const response = await register(registerData1);
-
-        console.log('Registration successful:', response);
-
-        // Show success message using the API response message
-        const successMessage = response?.message;
-        Alert.alert('Success', successMessage, [
-          {
-            text: 'OK',
-          },
-        ]);
-      } catch (err: any) {
-        console.error('Registration error:', err);
-        console.log('Error', err);
-      }
-    };
-    handleSignUp({
-      fullName: registerData.name,
-      email: registerData.email,
-      username: registerData.username,
-      password: registerData.password,
-      rePassword: registerData.password_confirm,
-    });
+      setLoading(false);
+    } catch (err: any) {
+      console.error('Resend OTP error:', err);
+      setLoading(false);
+      Toast.show({
+        type: 'error',
+        text1: 'Failed to Resend ❌',
+        text2: err?.message || 'Please try again.',
+      });
+    }
   };
 
   return (
@@ -113,7 +109,7 @@ const OTPVerification = () => {
             <Ionicons name="chevron-back" size={wp('6%')} color="#111" />
           </TouchableOpacity>
 
-          {/* Big Title */}
+          {/* Title */}
           <View
             style={{
               marginTop: hp('2%'),
@@ -122,7 +118,7 @@ const OTPVerification = () => {
             }}
           >
             <Text style={styles.titleBold}>OTP</Text>
-            <Text style={styles.titlePink}>VERFICATION</Text>
+            <Text style={styles.titlePink}>VERIFICATION</Text>
           </View>
 
           {/* OTP Input Component */}
@@ -139,17 +135,19 @@ const OTPVerification = () => {
           />
         </View>
       </ScrollView>
+
+      {/* ✅ Fullscreen Loader */}
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color={PrimaryColors.BRAND_PINK} />
+          <Text style={styles.loadingText}>Please wait...</Text>
+        </View>
+      )}
     </AppSafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
-  },
   card: {
     flex: 1,
     backgroundColor: PrimaryColors.CARD,
@@ -168,6 +166,23 @@ const styles = StyleSheet.create({
     fontFamily: 'benzin-bold',
     color: PrimaryColors.BRAND_PINK,
     letterSpacing: 0.5,
+  },
+  loadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
+  },
+  loadingText: {
+    marginTop: 10,
+    color: 'white',
+    fontSize: wp('4%'),
+    fontWeight: '600',
   },
 });
 

@@ -56,7 +56,7 @@ const CustomTextInput: React.FC<CustomTextInputProps> = ({
         {password && (
           <TouchableOpacity onPress={() => setSecure(!secure)}>
             <Feather
-              name={secure ? 'eye' : 'eye-off'}
+              name={secure ? 'eye-off' : 'eye'}
               size={wp('5%')}
               color="#FFFFFFCC"
             />

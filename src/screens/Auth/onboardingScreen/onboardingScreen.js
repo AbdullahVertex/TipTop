@@ -19,6 +19,8 @@ import {
 import { useAppDispatch } from '../../../hooks/redux';
 import { completeOnboarding } from '../../../store/slices/authSlice';
 import Images from '../../../assets/images/Images';
+import { AsyncValues } from '../../../utils/AsyncValues';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
 
@@ -53,7 +55,9 @@ const OnboardingScreen = () => {
     const slideIndex = Math.round(event.nativeEvent.contentOffset.x / width);
     setCurrentSlide(slideIndex);
   };
-
+  const finishOnboarding = async () => {
+    await AsyncStorage.setItem(AsyncValues.OnboardingSeen, 'true');
+  };
   const handleNext = async () => {
     if (currentSlide < slides.length - 1) {
       scrollRef.current.scrollTo({
@@ -62,7 +66,10 @@ const OnboardingScreen = () => {
       });
     } else {
       // Mark onboarding as completed and navigate to login
-      await dispatch(completeOnboarding());
+      //await dispatch(completeOnboarding());
+      finishOnboarding();
+      const GetBoolean = AsyncStorage.getItem(AsyncValues.OnboardingSeen);
+      console.log('Testing Boolean of finished Onboarding', GetBoolean);
       navigation.navigate('Login');
     }
   };

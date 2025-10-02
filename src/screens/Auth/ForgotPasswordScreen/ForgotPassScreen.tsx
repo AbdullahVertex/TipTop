@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, Modal, ActivityIndicator } from 'react-native';
 import AppSafeAreaView from '../../../components/General/SafeAreaView/SafeAreaView';
 import Header from '../../../components/General/Headers/GeneralHeader';
 import { wp } from '../../../utils/helpers/responsive';
@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import LabeledPasswordInput from '../../../components/General/TextInput/SignUpTextInput';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import Toast from 'react-native-toast-message';
 import { useAuthApi } from '../../../hooks/useApi';
 
 // ✅ Validation schema with Yup
@@ -21,51 +22,55 @@ const ForgotPassScreen = () => {
   const navigation = useNavigation();
   const { resetPassword, loading, error, clearError } = useAuthApi();
   const [apiError, setApiError] = useState('');
+  const [showLoader, setShowLoader] = useState(false);
 
   // Handle form submission
-  const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values: any, { setSubmitting }: any) => {
     try {
       setApiError('');
       clearError();
+      setShowLoader(true);
 
       // Prepare data for API
-      const resetData = {
-        email: values.email,
-      };
-
+      const resetData = { email: values.email };
       console.log('Sending password reset request for:', resetData);
 
       // Call API
       const result = await resetPassword(resetData);
 
       if (result?.message) {
-        // Show success message
-        Alert.alert(
-          'Success',
-          'Password reset instructions have been sent to your email.',
-          [
-            {
-              text: 'OK',
-              onPress: () => {
-                // Navigate to OTP verification screen for password reset
-                navigation.navigate('OTP', {
-                  registerData: { email: values.email },
-                  flowType: 'password_reset',
-                });
-              },
-            },
-          ],
-        );
+        // ✅ Show success toast
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: 'Password reset instructions have been sent to your email.',
+        });
+
+        // Navigate to OTP screen after slight delay
+        setTimeout(() => {
+          navigation.navigate('OTP' as never, {
+            registerData: { email: values.email },
+            flowType: 'password_reset',
+          });
+        }, 800);
       } else {
         throw new Error(result?.message || 'Failed to send reset instructions');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Password reset error:', err);
       setApiError(
         err.message || 'Failed to send reset instructions. Please try again.',
       );
+
+      // ❌ Show error toast
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: err.message || 'Failed to send reset instructions.',
+      });
     } finally {
       setSubmitting(false);
+      setShowLoader(false);
     }
   };
 
@@ -117,6 +122,14 @@ const ForgotPassScreen = () => {
           </>
         )}
       </Formik>
+
+      {/* ✅ Full screen loader modal */}
+      <Modal visible={showLoader} transparent animationType="fade">
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#fff" />
+          <Text style={styles.loaderText}>Please wait...</Text>
+        </View>
+      </Modal>
     </AppSafeAreaView>
   );
 };
@@ -140,6 +153,18 @@ const styles = StyleSheet.create({
     color: '#F44336',
     fontSize: wp('3.5%'),
     textAlign: 'center',
+  },
+  loaderContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loaderText: {
+    color: '#fff',
+    marginTop: 12,
+    fontSize: wp(4),
+    fontWeight: '500',
   },
 });
 

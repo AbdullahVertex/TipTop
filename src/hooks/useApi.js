@@ -201,6 +201,17 @@ export const useAuthApi = () => {
     },
     [post],
   );
+  const changePassword = useCallback(
+    async resetData => {
+      try {
+        const response = await post('/api/v1/auth/change-password', resetData);
+        return response;
+      } catch (err) {
+        throw err;
+      }
+    },
+    [post],
+  );
 
   return {
     register,
@@ -208,6 +219,7 @@ export const useAuthApi = () => {
     OTP,
     resetPassword,
     confirmPasswordReset,
+    changePassword,
     loading,
     error,
     clearError,
